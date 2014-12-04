@@ -11,7 +11,7 @@ the latest version of ECMA-262) while minimising the number of invalid programs
 that may be represented.
 
 This specification is defined using the [Web IDL](http://www.w3.org/TR/WebIDL/)
-standard with the following extended attributes:
+standard with the following extended attribute:
 
 0. `TypeIndicator`: This extended attribute may be applied to a readonly
    attribute to indicate the following:
@@ -21,8 +21,6 @@ standard with the following extended attributes:
        interfaces that inherit the attribute.
      * The value of the attribute is the member of the above-declared enum
        associated with the interface's *identifier*.
-0. `NonEmpty`: This extended attribute may be applied to any attribute with a
-   Sequence or Array type to disallow the zero-length inhabitant of that type.
 
 
 ## Status
