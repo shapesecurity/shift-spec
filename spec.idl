@@ -1,0 +1,347 @@
+/**
+ * Copyright 2014 Shape Security, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+  INFO: This specification is currently divided into the following sections:
+  * supporting types
+  * node classes
+  * functions
+  * object expressions
+  * literals
+  * other expressions
+  * other statements
+  * directives
+  * other nodes
+*/
+
+
+// supporting types
+
+typedef Expression[] Arguments;
+typedef DOMString string;
+
+enum VariableDeclarationKind { "var", "let", "const" };
+enum PropertyNameKind { "identifier", "string", "number" };
+
+enum AssignmentOperator {
+  "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
+};
+enum BinaryOperator {
+  "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
+  ">>", ">>>", "+", "-", "*", "/", "%", ",", "||", "&&", "|", "^", "&"
+};
+enum PrefixOperator { "+", "-", "!", "~", "typeof", "void", "delete", "++", "--" };
+enum PostfixOperator { "++", "--" };
+
+
+// node classes
+
+interface Node {
+  [TypeIndicator] readonly attribute Type type;
+  // TODO: attribute SourceLocation loc;
+};
+
+interface Directive : Node { };
+interface Statement : Node { };
+interface IterationStatement : Node { };
+interface Expression : Node { };
+interface UnaryExpression : Expression {
+  attribute Expression operand;
+};
+interface MemberExpression : Expression {
+  attribute Expression _object;
+};
+interface PrimaryExpression : Expression { };
+interface LiteralExpression : PrimaryExpression { };
+
+interface Function {
+  attribute Identifier[] parameters;
+};
+
+interface ObjectProperty {
+  attribute PropertyName name;
+};
+interface AccessorProperty : ObjectProperty {
+  attribute FunctionBody body;
+};
+
+
+// functions
+
+interface FunctionBody : Node {
+  attribute Directive[] directives;
+  attribute Statement[] statements;
+};
+
+interface FunctionDeclaration : Statement {
+  attribute Identifier name;
+  attribute FunctionBody body;
+};
+FunctionDeclaration implements Function;
+
+interface FunctionExpression : PrimaryExpression {
+  attribute Identifier? name;
+  attribute FunctionBody body;
+};
+FunctionExpression implements Function;
+
+
+// object expressions
+
+interface ObjectExpression : PrimaryExpression {
+  attribute ObjectProperty[] properties;
+};
+
+interface Getter : Node { };
+Getter implements AccessorProperty;
+
+interface Setter : Node {
+  attribute Identifier parameter;
+};
+Setter implements AccessorProperty;
+
+interface DataProperty : Node {
+  attribute Expression expression;
+};
+DataProperty implements ObjectProperty;
+
+interface PropertyName : Node {
+  attribute PropertyNameKind kind;
+  attribute string value;
+};
+
+
+// literals
+
+interface LiteralBooleanExpression : LiteralExpression {
+  attribute boolean value;
+};
+
+interface LiteralNullExpression : LiteralExpression { };
+
+interface LiteralNumericExpression : LiteralExpression {
+  attribute double value;
+};
+
+interface LiteralRegExpExpression : LiteralExpression {
+  attribute string value;
+};
+
+interface LiteralStringExpression : LiteralExpression {
+  attribute string value;
+};
+
+
+// other expressions
+
+interface ArrayExpression : PrimaryExpression {
+  attribute Expression?[] elements;
+};
+
+interface AssignmentExpression : Expression {
+  attribute AssignmentOperator operator;
+  attribute Expression binding;
+  attribute Expression expression;
+};
+
+interface BinaryExpression : Expression {
+  attribute BinaryOperator operator;
+  attribute Expression left;
+  attribute Expression right;
+};
+
+interface CallExpression : Expression {
+  attribute Expression callee;
+  attribute Arguments arguments;
+};
+
+interface ComputedMemberExpression : MemberExpression {
+  attribute Expression expression;
+};
+
+interface ConditionalExpression : Expression {
+  attribute Expression test;
+  attribute Expression consequent;
+  attribute Expression alternate;
+};
+
+interface IdentifierExpression : PrimaryExpression {
+  attribute Identifier identifier;
+};
+
+interface NewExpression : Expression {
+  attribute Expression callee;
+  attribute Arguments arguments;
+};
+
+interface PostfixExpression : UnaryExpression {
+  attribute PostfixOperator operator;
+};
+
+interface PrefixExpression : UnaryExpression {
+  attribute PrefixOperator operator;
+};
+
+interface StaticMemberExpression : MemberExpression {
+  attribute Identifier property;
+};
+
+interface ThisExpression : PrimaryExpression { };
+
+
+// other statements
+
+interface BlockStatement : Statement {
+  attribute Block block;
+};
+
+interface BreakStatement : Statement {
+  attribute Identifier? label;
+};
+
+interface ContinueStatement : Statement {
+  attribute Identifier? label;
+};
+
+interface DebuggerStatement : Statement { };
+
+interface DoWhileStatement : IterationStatement {
+  attribute Statement body;
+  attribute Expression test;
+};
+
+interface EmptyStatement : Statement { };
+
+interface ExpressionStatement : Statement {
+  attribute Expression expression;
+};
+
+interface ForInStatement : IterationStatement {
+  attribute (VariableDeclaration or Expression) left;
+  attribute Expression right;
+  attribute Statement body;
+};
+
+interface ForStatement : IterationStatement {
+  attribute (VariableDeclaration or Expression)? init;
+  attribute Expression? test;
+  attribute Expression? update;
+  attribute Statement body;
+};
+
+interface IfStatement : Statement {
+  attribute Expression test;
+  attribute Statement consequent;
+  attribute Statement? alternate;
+};
+
+interface LabeledStatement : Statement {
+  attribute Identifier label;
+  attribute Statement body;
+};
+
+interface ReturnStatement : Statement {
+  attribute Expression? expression;
+};
+
+interface SwitchStatement : Statement {
+  attribute Expression discriminant;
+  attribute SwitchCase[] cases;
+};
+
+interface SwitchStatementWithDefault : Statement {
+  attribute Expression discriminant;
+  attribute SwitchCase[] preDefaultCases;
+  attribute SwitchDefault defaultCase;
+  attribute SwitchCase[] postDefaultCases;
+};
+
+interface ThrowStatement : Statement {
+  attribute Expression expression;
+};
+
+interface TryCatchStatement : Statement {
+  attribute Block body;
+  attribute CatchClause catchClause;
+};
+
+interface TryFinallyStatement : Statement {
+  attribute Block body;
+  attribute CatchClause? catchClause;
+  attribute Block finalizer;
+};
+
+interface VariableDeclarationStatement : Statement {
+  attribute VariableDeclaration declaration;
+};
+
+interface WhileStatement : IterationStatement {
+  attribute Expression test;
+  attribute Statement body;
+};
+
+interface WithStatement : Statement {
+  attribute Expression _object;
+  attribute Statement body;
+};
+
+
+// directives
+
+interface UnknownDirective : Directive {
+  attribute string value;
+};
+
+interface UseStrictDirective : Directive { };
+
+
+// other nodes
+
+interface Block : Node {
+  attribute Statement[] statements;
+};
+
+interface CatchClause : Node {
+  attribute Identifier binding;
+  attribute Block body;
+};
+
+interface Identifier : Node {
+  attribute string name;
+};
+
+interface Script : Node {
+  attribute FunctionBody body;
+};
+
+interface SwitchCase : Node {
+  attribute Expression test;
+  attribute Statement[] consequent;
+};
+
+interface SwitchDefault : Node {
+  attribute Statement[] consequent;
+};
+
+interface VariableDeclaration : Node {
+  attribute VariableDeclarationKind kind;
+  [NonEmpty] attribute VariableDeclarator[] declarators;
+};
+
+interface VariableDeclarator : Node {
+  attribute Identifier binding;
+  attribute Expression? init;
+};

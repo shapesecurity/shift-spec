@@ -1,0 +1,26 @@
+{
+  "name": "shift-spec",
+  "version": "1.0.0",
+  "description": "Shift AST specification",
+  "author": "Shape Security Labs",
+  "homepage": "https://github.com/shapesecurity/shift-spec",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shapesecurity/shift-spec.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Shift",
+    "AST",
+    "specification",
+    "abstract",
+    "syntax",
+    "tree"
+  ],
+  "bugs": {
+    "url": "https://github.com/shapesecurity/shift-spec/issues"
+  },
+  "license": "Apache-2.0"
+}
