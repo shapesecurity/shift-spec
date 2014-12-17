@@ -67,15 +67,15 @@ interface MemberExpression : Expression {
 interface PrimaryExpression : Expression { };
 interface LiteralExpression : PrimaryExpression { };
 
-interface Function {
-  attribute Identifier[] parameters;
-};
-
-interface ObjectProperty {
+interface ObjectProperty : Node {
   attribute PropertyName name;
 };
 interface AccessorProperty : ObjectProperty {
   attribute FunctionBody body;
+};
+
+interface Function {
+  attribute Identifier[] parameters;
 };
 
 
@@ -105,18 +105,15 @@ interface ObjectExpression : PrimaryExpression {
   attribute ObjectProperty[] properties;
 };
 
-interface Getter : Node { };
-Getter implements AccessorProperty;
+interface Getter : AccessorProperty { };
 
-interface Setter : Node {
+interface Setter : AccessorProperty {
   attribute Identifier parameter;
 };
-Setter implements AccessorProperty;
 
-interface DataProperty : Node {
+interface DataProperty : ObjectProperty {
   attribute Expression expression;
 };
-DataProperty implements ObjectProperty;
 
 interface PropertyName : Node {
   attribute PropertyNameKind kind;
