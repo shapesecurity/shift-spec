@@ -43,6 +43,7 @@ describes their purpose.
 
 ### Create
 
+* [Shift Parser](https://github.com/shapesecurity/shift-parser-js)
 * [Shift AST Constructors](https://github.com/shapesecurity/shift-ast-js)
 * [Shift-SpiderMonkey Converter](https://github.com/shapesecurity/shift-spidermonkey-converter-js)
 
