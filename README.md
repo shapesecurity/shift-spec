@@ -73,6 +73,17 @@ describes their purpose.
 * RegExps and other exotic values are not used as primitives to allow for the
   possibility of serialisation to JSON.
 
+### Compromises
+
+* `VariableDeclarationKind` contains `let` and `const`, which should only be
+  allowed in ES6, but implementations had widespread support for these
+  declaration kinds long before they had support for any other ES6 feature.
+  Because of this, many people consider it an unofficial extension to ES5.
+* Similarly, `FunctionDeclaration`s in arbitrary `Statement` position were
+  allowed by many ES5 implementations (with varying semantics), so the
+  `SourceElement` class was removed, and `FunctionDeclaration` was moved to
+  `Statement`.
+
 
 ## License
 
