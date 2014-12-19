@@ -50,6 +50,7 @@ describes their purpose.
 ### Transform
 
 * [Shift Reducer](https://github.com/shapesecurity/shift-reducer-js)
+* [Shift Code Generator](https://github.com/shapesecurity/shift-codegen-js)
 
 ### Analyse
 
