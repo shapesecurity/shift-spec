@@ -55,6 +55,7 @@ describes their purpose.
 ### Analyse
 
 * [Shift Validator](https://github.com/shapesecurity/shift-validator-js)
+* [Shift Scope Analyzer](https://github.com/shapesecurity/shift-scope-js)
 
 ### Use
 
