@@ -46,12 +46,19 @@ enum BinaryOperator {
 enum PrefixOperator { "+", "-", "!", "~", "typeof", "void", "delete", "++", "--" };
 enum PostfixOperator { "++", "--" };
 
+interface SourceLocation {
+  attribute string? source;
+  attribute unsigned long line;
+  attribute unsigned long column;
+  attribute unsigned long offset;
+};
+
 
 // node classes
 
 interface Node {
   [TypeIndicator] readonly attribute Type type;
-  // TODO: attribute SourceLocation loc;
+  attribute SourceLocation? loc;
 };
 
 interface Directive : Node { };
