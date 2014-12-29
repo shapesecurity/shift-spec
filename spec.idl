@@ -62,8 +62,12 @@ interface Node {
 };
 
 interface Directive : Node { };
+
 interface Statement : Node { };
-interface IterationStatement : Node { };
+interface IterationStatement : Node {
+  attribute Statement body;
+};
+
 interface Expression : Node { };
 interface UnaryExpression : Expression {
   attribute Expression operand;
@@ -223,7 +227,6 @@ interface ContinueStatement : Statement {
 interface DebuggerStatement : Statement { };
 
 interface DoWhileStatement : IterationStatement {
-  attribute Statement body;
   attribute Expression test;
 };
 
@@ -236,14 +239,12 @@ interface ExpressionStatement : Statement {
 interface ForInStatement : IterationStatement {
   attribute (VariableDeclaration or Expression) left;
   attribute Expression right;
-  attribute Statement body;
 };
 
 interface ForStatement : IterationStatement {
   attribute (VariableDeclaration or Expression)? init;
   attribute Expression? test;
   attribute Expression? update;
-  attribute Statement body;
 };
 
 interface IfStatement : Statement {
@@ -294,7 +295,6 @@ interface VariableDeclarationStatement : Statement {
 
 interface WhileStatement : IterationStatement {
   attribute Expression test;
-  attribute Statement body;
 };
 
 interface WithStatement : Statement {
