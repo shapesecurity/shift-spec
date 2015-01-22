@@ -97,23 +97,23 @@ interface ExportDeclaration : Node { };
 
 // bindings
 
-interface Binding : Node { };
+typedef (ObjectBinding or ArrayBinding or BindingIdentifier or MemberExpression) Binding;
 
 interface BindingWithDefault : Node {
-  attribute Binding binding;
+  attribute (ObjectBinding or ArrayBinding or BindingIdentifier) binding;
   attribute Expression initializer;
 };
 
-interface BindingIdentifier : Binding {
+interface BindingIdentifier : Node {
   attribute Identifier identifier;
 };
 
-interface ArrayBinding : Binding {
-  attribute BindingWithDefault?[] elements;
+interface ArrayBinding : Node {
+  attribute (Binding or BindingWithDefault)?[] elements;
   attribute BindingIdentifier? restElement;
 };
 
-interface ObjectBinding : Binding {
+interface ObjectBinding : Node {
   attribute BindingProperty[] properties;
 };
 
@@ -126,7 +126,7 @@ interface BindingPropertyIdentifier : BindingProperty {
 
 interface BindingPropertyProperty : BindingProperty {
   attribute PropertyName propertyName;
-  attribute BindingWithDefault binding;
+  attribute (Binding or BindingWithDefault) binding;
 };
 
 
@@ -199,7 +199,7 @@ interface ExportDefault : ExportDeclaration {
 // functions
 
 interface Function {
-  attribute BindingWithDefault[] parameters;
+  attribute (Binding or BindingWithDefault)[] parameters;
   attribute BindingIdentifier? restParameter;
 };
 
@@ -381,18 +381,18 @@ interface ExpressionStatement : Statement {
 };
 
 interface ForInStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding or MemberExpression) left;
+  attribute (VariableDeclaration or Binding) left;
   attribute Expression right;
 };
 
 interface ForOfStatement : Statement {
-  attribute (VariableDeclaration or Binding or MemberExpression) left;
+  attribute (VariableDeclaration or Binding) left;
   attribute Expression right;
   attribute Statement body;
 };
 
 interface ForStatement : IterationStatement {
-  attribute (VariableDeclaration or Expression)? init;
+  attribute (VariableDeclaration or Binding)? init;
   attribute Expression? test;
   attribute Expression? update;
 };
@@ -499,6 +499,6 @@ interface VariableDeclaration : Node {
 };
 
 interface VariableDeclarator : Node {
-  attribute Identifier binding;
+  attribute Binding binding;
   attribute Expression? init;
 };
