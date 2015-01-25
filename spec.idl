@@ -37,7 +37,6 @@ typedef (SpreadElement or Expression)[] Arguments;
 typedef DOMString string;
 
 enum VariableDeclarationKind { "var", "let", "const" };
-enum PropertyNameKind { "identifier", "string", "number" };
 
 enum AssignmentOperator {
   "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
@@ -264,7 +263,6 @@ interface ComputedPropertyName : PropertyName {
 };
 
 interface StaticPropertyName : PropertyName {
-  attribute PropertyNameKind kind;
   attribute string value;
 };
 
