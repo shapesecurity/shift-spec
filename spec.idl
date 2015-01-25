@@ -18,6 +18,9 @@
   INFO: This specification is currently divided into the following sections:
   * supporting types
   * node classes
+  * bindings
+  * classes
+  * modules
   * functions
   * object expressions
   * literals
@@ -30,7 +33,7 @@
 
 // supporting types
 
-typedef Expression[] Arguments;
+typedef (SpreadElement or Expression)[] Arguments;
 typedef DOMString string;
 
 enum VariableDeclarationKind { "var", "let", "const" };
@@ -83,19 +86,135 @@ interface MemberExpression : Expression {
 interface PrimaryExpression : Expression { };
 interface LiteralExpression : PrimaryExpression { };
 
-interface ObjectProperty : Node {
+interface PropertyName : Node { };
+
+interface ObjectProperty : Node { };
+interface NamedObjectProperty : ObjectProperty {
   attribute PropertyName name;
 };
-interface AccessorProperty : ObjectProperty {
+interface MethodDefinition : NamedObjectProperty {
   attribute FunctionBody body;
 };
+interface AccessorProperty : MethodDefinition { };
 
-interface Function {
-  attribute Identifier[] parameters;
+interface ImportDeclaration : Node {
+  attribute string moduleSpecifier;
+};
+interface ExportDeclaration : Node { };
+
+
+// bindings
+
+interface Binding : Node { };
+
+interface BindingWithDefault : Node {
+  attribute Binding binding;
+  attribute Expression initializer;
+};
+
+interface BindingIdentifier : Binding {
+  attribute Identifier identifier;
+};
+
+interface ArrayBinding : Binding {
+  attribute BindingWithDefault?[] elements;
+  attribute BindingIdentifier? restElement;
+};
+
+interface ObjectBinding : Binding {
+  attribute BindingProperty[] properties;
+};
+
+interface BindingProperty : Node { };
+
+interface BindingPropertyIdentifier : BindingProperty {
+  attribute BindingIdentifier identifier;
+  attribute Expression? initializer;
+};
+
+interface BindingPropertyProperty : BindingProperty {
+  attribute PropertyName propertyName;
+  attribute BindingWithDefault binding;
+};
+
+
+// classes
+
+interface Class {
+  attribute BindingIdentifier name;
+  attribute Expression? super;
+  attribute ClassElement[] elements;
+};
+
+interface ClassExpression : Expression { };
+ClassExpression implements Class;
+
+interface ClassStatement : Statement { };
+ClassStatement implements Class;
+
+interface ClassElement : Node {
+  attribute boolean isStatic;
+  attribute MethodDefinition method;
+};
+
+
+// modules
+
+interface Module : Node {
+  attribute Directive[] directives;
+  attribute (ImportDeclaration or ExportDeclaration or Statement)[] sourceElements;
+};
+
+interface ImportModule : ImportDeclaration { };
+
+interface ImportFrom : ImportDeclaration {
+  attribute (BindingIdentifier or NamedImports)? importClause;
+};
+
+interface ImportFromWithBinding : ImportDeclaration {
+  attribute BindingIdentifier bindingIdentifier;
+  attribute (BindingIdentifier or NamedImports) importClause;
+};
+
+interface NamedImports : Node {
+  attribute ImportSpecifier[] importSpecifiers;
+};
+
+interface ImportSpecifier : Node {
+  attribute Identifier? identifier;
+  attribute BindingIdentifier bindingIdentifier;
+};
+
+interface ExportFrom : ExportDeclaration {
+  attribute ExportSpecifier[] exportSpecifiers;
+  attribute string moduleSpecifier;
+};
+
+interface ExportSpecifier : Node {
+  attribute Identifier? identifier;
+  attribute Identifier as;
+};
+
+interface Export : ExportDeclaration {
+  attribute (FunctionDeclaration or ClassDeclaration or VariableDeclaration) target;
+};
+
+interface ExportDefault : ExportDeclaration {
+  attribute (FunctionDeclaration or ClassDeclaration or AssignmentExpression) target;
 };
 
 
 // functions
+
+interface Function {
+  attribute BindingWithDefault[] parameters;
+  attribute BindingIdentifier? restParameter;
+};
+
+interface ArrowExpression : Expression {
+  attribute (FunctionBody or Expression) body;
+};
+ArrowExpression implements Function;
 
 interface FunctionBody : Node {
   attribute Directive[] directives;
@@ -103,12 +222,14 @@ interface FunctionBody : Node {
 };
 
 interface FunctionDeclaration : Statement {
+  attribute boolean isGenerator;
   attribute Identifier name;
   attribute FunctionBody body;
 };
 FunctionDeclaration implements Function;
 
 interface FunctionExpression : PrimaryExpression {
+  attribute boolean isGenerator;
   attribute Identifier? name;
   attribute FunctionBody body;
 };
@@ -121,17 +242,30 @@ interface ObjectExpression : PrimaryExpression {
   attribute ObjectProperty[] properties;
 };
 
+interface Method : MethodDefinition {
+  attribute boolean isGenerator;
+};
+Method implements Function;
+
 interface Getter : AccessorProperty { };
 
 interface Setter : AccessorProperty {
-  attribute Identifier parameter;
+  attribute Binding parameter;
 };
 
-interface DataProperty : ObjectProperty {
+interface DataProperty : NamedObjectProperty {
   attribute Expression expression;
 };
 
-interface PropertyName : Node {
+interface ShorthandProperty : ObjectProperty {
+  attribute Identifier name;
+};
+
+interface ComputedPropertyName : PropertyName {
+  attribute Expression value;
+};
+
+interface StaticPropertyName : PropertyName {
   attribute PropertyNameKind kind;
   attribute string value;
 };
@@ -163,12 +297,12 @@ interface LiteralStringExpression : LiteralExpression {
 // other expressions
 
 interface ArrayExpression : PrimaryExpression {
-  attribute Expression?[] elements;
+  attribute (SpreadElement or Expression)?[] elements;
 };
 
 interface AssignmentExpression : Expression {
   attribute AssignmentOperator operator;
-  attribute Expression binding;
+  attribute Binding binding;
   attribute Expression expression;
 };
 
@@ -214,7 +348,19 @@ interface StaticMemberExpression : MemberExpression {
   attribute Identifier property;
 };
 
+interface TemplateString : PrimaryExpression {
+  attribute (Expression or TemplateLiteral)[] elements;
+};
+
 interface ThisExpression : PrimaryExpression { };
+
+interface YieldExpression : Expression {
+  attribute Expression? expression;
+};
+
+interface YieldGeneratorExpression : Expression {
+  attribute Expression expression;
+};
 
 
 // other statements
@@ -244,8 +390,14 @@ interface ExpressionStatement : Statement {
 };
 
 interface ForInStatement : IterationStatement {
-  attribute (VariableDeclaration or Expression) left;
+  attribute (VariableDeclaration or Binding or MemberExpression) left;
   attribute Expression right;
+};
+
+interface ForOfStatement : Statement {
+  attribute (VariableDeclaration or Binding or MemberExpression) left;
+  attribute Expression right;
+  attribute Statement body;
 };
 
 interface ForStatement : IterationStatement {
@@ -326,7 +478,7 @@ interface Block : Node {
 };
 
 interface CatchClause : Node {
-  attribute Identifier binding;
+  attribute Binding binding;
   attribute Block body;
 };
 
@@ -338,6 +490,10 @@ interface Script : Node {
   attribute FunctionBody body;
 };
 
+interface SpreadElement : Node {
+  attribute Expression expression;
+};
+
 interface SwitchCase : Node {
   attribute Expression test;
   attribute Statement[] consequent;
@@ -346,6 +502,10 @@ interface SwitchCase : Node {
 interface SwitchDefault : Node {
   attribute Statement[] consequent;
 };
+
+interface TemplateLiteral : Node {
+  attribute string value;
+}
 
 interface VariableDeclaration : Node {
   attribute VariableDeclarationKind kind;
