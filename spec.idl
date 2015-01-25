@@ -69,8 +69,6 @@ interface Node {
   attribute SourceSpan? loc;
 };
 
-interface Directive : Node { };
-
 interface Statement : Node { };
 interface IterationStatement : Node {
   attribute Statement body;
@@ -462,15 +460,6 @@ interface WithStatement : Statement {
 };
 
 
-// directives
-
-interface UnknownDirective : Directive {
-  attribute string value;
-};
-
-interface UseStrictDirective : Directive { };
-
-
 // other nodes
 
 interface Block : Node {
@@ -480,6 +469,10 @@ interface Block : Node {
 interface CatchClause : Node {
   attribute Binding binding;
   attribute Block body;
+};
+
+interface Directive : Node {
+  attribute string value;
 };
 
 interface Identifier : Node {
