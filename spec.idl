@@ -130,7 +130,7 @@ interface BindingPropertyIdentifier : BindingProperty {
 };
 
 interface BindingPropertyProperty : BindingProperty {
-  attribute PropertyName propertyName;
+  attribute PropertyName name;
   attribute (Binding or BindingWithDefault) binding;
 };
 
