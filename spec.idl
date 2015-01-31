@@ -106,7 +106,7 @@ typedef (ObjectBinding or ArrayBinding or BindingIdentifier or MemberExpression)
 
 interface BindingWithDefault : Node {
   attribute (ObjectBinding or ArrayBinding or BindingIdentifier) binding;
-  attribute Expression initializer;
+  attribute Expression init;
 };
 
 interface BindingIdentifier : Node {
@@ -126,7 +126,7 @@ interface BindingProperty : Node { };
 
 interface BindingPropertyIdentifier : BindingProperty {
   attribute BindingIdentifier identifier;
-  attribute Expression? initializer;
+  attribute Expression? init;
 };
 
 interface BindingPropertyProperty : BindingProperty {
