@@ -385,10 +385,9 @@ interface ForInStatement : IterationStatement {
   attribute Expression right;
 };
 
-interface ForOfStatement : Statement {
+interface ForOfStatement : IterationStatement {
   attribute (VariableDeclaration or Binding) left;
   attribute Expression right;
-  attribute Statement body;
 };
 
 interface ForStatement : IterationStatement {
