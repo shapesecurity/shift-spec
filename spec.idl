@@ -78,7 +78,7 @@ interface UnaryExpression : Expression {
   attribute Expression operand;
 };
 interface MemberExpression : Expression {
-  attribute Expression _object;
+  attribute (Expression or Super) _object;
 };
 interface PrimaryExpression : Expression { };
 interface LiteralExpression : PrimaryExpression { };
@@ -309,7 +309,7 @@ interface BinaryExpression : Expression {
 };
 
 interface CallExpression : Expression {
-  attribute Expression callee;
+  attribute (Expression or Super) callee;
   attribute Arguments arguments;
 };
 
@@ -483,6 +483,8 @@ interface Script : Node {
 interface SpreadElement : Node {
   attribute Expression expression;
 };
+
+interface Super : Node { };
 
 interface SwitchCase : Node {
   attribute Expression test;
