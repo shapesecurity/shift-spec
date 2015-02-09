@@ -332,6 +332,8 @@ interface NewExpression : Expression {
   attribute Arguments arguments;
 };
 
+interface NewTargetExpression : Expression { };
+
 interface PostfixExpression : UnaryExpression {
   attribute PostfixOperator operator;
 };
