@@ -47,10 +47,15 @@ enum PrefixOperator { "+", "-", "!", "~", "typeof", "void", "delete", "++", "--"
 enum PostfixOperator { "++", "--" };
 
 interface SourceLocation {
-  attribute string? source;
   attribute unsigned long line;
   attribute unsigned long column;
   attribute unsigned long offset;
+};
+
+interface SourceSpan {
+  attribute string? source;
+  attribute SourceLocation start;
+  attribute SourceLocation end;
 };
 
 
@@ -58,7 +63,7 @@ interface SourceLocation {
 
 interface Node {
   [TypeIndicator] readonly attribute Type type;
-  attribute SourceLocation? loc;
+  attribute SourceSpan? loc;
 };
 
 interface Directive : Node { };
