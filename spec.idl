@@ -146,8 +146,8 @@ interface Class {
 interface ClassExpression : Expression { };
 ClassExpression implements Class;
 
-interface ClassStatement : Statement { };
-ClassStatement implements Class;
+interface ClassDeclaration : Statement { };
+ClassDeclaration implements Class;
 
 interface ClassElement : Node {
   attribute boolean isStatic;
