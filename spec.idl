@@ -282,7 +282,8 @@ interface LiteralNumericExpression : LiteralExpression {
 };
 
 interface LiteralRegExpExpression : LiteralExpression {
-  attribute string value;
+  attribute string pattern;
+  attribute string flags;
 };
 
 interface LiteralStringExpression : LiteralExpression {
