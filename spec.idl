@@ -344,7 +344,7 @@ interface PrefixExpression : UnaryExpression {
 };
 
 interface StaticMemberExpression : MemberExpression {
-  attribute Identifier property;
+  attribute string property;
 };
 
 interface TemplateString : PrimaryExpression {
