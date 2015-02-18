@@ -389,12 +389,14 @@ interface ExpressionStatement : Statement {
 };
 
 interface ForInStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding) left;
+  attribute VariableDeclarationKind? kind;
+  attribute Binding left;
   attribute Expression right;
 };
 
 interface ForOfStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding) left;
+  attribute VariableDeclarationKind? kind;
+  attribute Binding left;
   attribute Expression right;
 };
 
