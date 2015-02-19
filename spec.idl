@@ -162,42 +162,41 @@ interface Module : Node {
   attribute (ImportDeclaration or ExportDeclaration or Statement)[] sourceElements;
 };
 
-interface ImportModule : ImportDeclaration { };
-
-interface ImportFrom : ImportDeclaration {
-  attribute (BindingIdentifier or NamedImports)? importClause;
+interface Import : ImportDeclaration {
+  attribute BindingIdentifier? defaultBinding;
+  attribute ImportSpecifier[] namedImports;
 };
 
-interface ImportFromWithBinding : ImportDeclaration {
-  attribute BindingIdentifier bindingIdentifier;
-  attribute (BindingIdentifier or NamedImports) importClause;
-};
-
-interface NamedImports : Node {
-  attribute ImportSpecifier[] importSpecifiers;
+interface ImportNamespace : ImportDeclaration {
+  attribute BindingIdentifier? defaultBinding;
+  attribute BindingIdentifier namespaceBinding;
 };
 
 interface ImportSpecifier : Node {
-  attribute Identifier? identifier;
-  attribute BindingIdentifier bindingIdentifier;
+  attribute Identifier? name;
+  attribute BindingIdentifier binding;
 };
 
-interface ExportFrom : ExportDeclaration {
-  attribute ExportSpecifier[] exportSpecifiers;
+interface ExportAllFrom : ExportDeclaration {
   attribute string moduleSpecifier;
 };
 
-interface ExportSpecifier : Node {
-  attribute Identifier? identifier;
-  attribute Identifier as;
+interface ExportFrom : ExportDeclaration {
+  attribute ExportSpecifier[] namedExports;
+  attribute string? moduleSpecifier;
 };
 
 interface Export : ExportDeclaration {
-  attribute (FunctionDeclaration or ClassDeclaration or VariableDeclaration) target;
+  attribute (FunctionDeclaration or ClassDeclaration or VariableDeclaration) declaration;
 };
 
 interface ExportDefault : ExportDeclaration {
-  attribute (FunctionDeclaration or ClassDeclaration or AssignmentExpression) target;
+  attribute (FunctionDeclaration or ClassDeclaration or Expression) value;
+};
+
+interface ExportSpecifier : Node {
+  attribute Identifier? name;
+  attribute Identifier exportedName;
 };
 
 
