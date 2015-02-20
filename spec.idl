@@ -37,7 +37,6 @@ typedef (SpreadElement or Expression)[] Arguments;
 typedef DOMString string;
 
 enum VariableDeclarationKind { "var", "let", "const" };
-
 enum AssignmentOperator {
   "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
 };
@@ -68,15 +67,22 @@ interface Node {
   attribute SourceSpan? loc;
 };
 
+interface Declaration : Node { };
+
+interface LexicalDeclaration : Declaration { };
+
 interface Statement : Node { };
+
 interface IterationStatement : Node {
   attribute Statement body;
 };
 
 interface Expression : Node { };
+
 interface UnaryExpression : Expression {
   attribute Expression operand;
 };
+
 interface MemberExpression : Expression {
   attribute (Expression or Super) _object;
 };
@@ -84,9 +90,11 @@ interface MemberExpression : Expression {
 interface PropertyName : Node { };
 
 interface ObjectProperty : Node { };
+
 interface NamedObjectProperty : ObjectProperty {
   attribute PropertyName name;
 };
+
 interface MethodDefinition : NamedObjectProperty {
   attribute FunctionBody body;
 };
@@ -94,6 +102,7 @@ interface MethodDefinition : NamedObjectProperty {
 interface ImportDeclaration : Node {
   attribute string moduleSpecifier;
 };
+
 interface ExportDeclaration : Node { };
 
 
@@ -143,7 +152,7 @@ interface Class {
 interface ClassExpression : Expression { };
 ClassExpression implements Class;
 
-interface ClassDeclaration : Statement { };
+interface ClassDeclaration : Declaration { };
 ClassDeclaration implements Class;
 
 interface ClassElement : Node {
@@ -156,7 +165,7 @@ interface ClassElement : Node {
 
 interface Module : Node {
   attribute Directive[] directives;
-  attribute (ImportDeclaration or ExportDeclaration or Statement)[] sourceElements;
+  attribute (ImportDeclaration or ExportDeclaration or Statement or Declaration)[] elements;
 };
 
 interface Import : ImportDeclaration {
@@ -211,10 +220,10 @@ ArrowExpression implements Function;
 
 interface FunctionBody : Node {
   attribute Directive[] directives;
-  attribute Statement[] statements;
+  attribute (Statement or Declaration)[] statements;
 };
 
-interface FunctionDeclaration : Statement {
+interface FunctionDeclaration : Declaration {
   attribute boolean isGenerator;
   attribute Identifier name;
   attribute FunctionBody body;
@@ -409,7 +418,7 @@ interface IfStatement : Statement {
 
 interface LabeledStatement : Statement {
   attribute Identifier label;
-  attribute Statement body;
+  attribute (Statement or FunctionDeclaration) body;
 };
 
 interface ReturnStatement : Statement {
@@ -444,7 +453,7 @@ interface TryFinallyStatement : Statement {
 };
 
 interface VariableDeclarationStatement : Statement {
-  attribute VariableDeclaration declaration;
+  attribute VariableDeclaration declaration;  // declaration.kind can only be 'var'
 };
 
 interface WhileStatement : IterationStatement {
@@ -460,12 +469,16 @@ interface WithStatement : Statement {
 // other nodes
 
 interface Block : Node {
-  attribute Statement[] statements;
+  attribute (Statement or Declaration)[] statements;
 };
 
 interface CatchClause : Node {
   attribute Binding binding;
   attribute Block body;
+};
+
+interface LexicalDeclaration : Declaration {
+  attribute VariableDeclaration declaration;  // declaration.kind cannot be 'var'
 };
 
 interface Directive : Node {
@@ -508,3 +521,4 @@ interface VariableDeclarator : Node {
   attribute Binding binding;
   attribute Expression? init;
 };
+
