@@ -344,6 +344,7 @@ interface StaticMemberExpression : MemberExpression {
 };
 
 interface TemplateString : Expression {
+  attribute Expression? tag;
   attribute (Expression or TemplateLiteral)[] elements;
 };
 
