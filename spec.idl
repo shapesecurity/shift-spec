@@ -80,8 +80,6 @@ interface UnaryExpression : Expression {
 interface MemberExpression : Expression {
   attribute (Expression or Super) _object;
 };
-interface PrimaryExpression : Expression { };
-interface LiteralExpression : PrimaryExpression { };
 
 interface PropertyName : Node { };
 
@@ -92,7 +90,6 @@ interface NamedObjectProperty : ObjectProperty {
 interface MethodDefinition : NamedObjectProperty {
   attribute FunctionBody body;
 };
-interface AccessorProperty : MethodDefinition { };
 
 interface ImportDeclaration : Node {
   attribute string moduleSpecifier;
@@ -224,7 +221,7 @@ interface FunctionDeclaration : Statement {
 };
 FunctionDeclaration implements Function;
 
-interface FunctionExpression : PrimaryExpression {
+interface FunctionExpression : Expression {
   attribute boolean isGenerator;
   attribute Identifier? name;
   attribute FunctionBody body;
@@ -234,7 +231,7 @@ FunctionExpression implements Function;
 
 // object expressions
 
-interface ObjectExpression : PrimaryExpression {
+interface ObjectExpression : Expression {
   attribute ObjectProperty[] properties;
 };
 
@@ -243,9 +240,9 @@ interface Method : MethodDefinition {
 };
 Method implements Function;
 
-interface Getter : AccessorProperty { };
+interface Getter : MethodDefinition { };
 
-interface Setter : AccessorProperty {
+interface Setter : MethodDefinition {
   attribute Binding parameter;
 };
 
@@ -268,31 +265,31 @@ interface StaticPropertyName : PropertyName {
 
 // literals
 
-interface LiteralBooleanExpression : LiteralExpression {
+interface LiteralBooleanExpression : Expression {
   attribute boolean value;
 };
 
-interface LiteralInfinityExpression : LiteralExpression { };
+interface LiteralInfinityExpression : Expression { };
 
-interface LiteralNullExpression : LiteralExpression { };
+interface LiteralNullExpression : Expression { };
 
-interface LiteralNumericExpression : LiteralExpression {
+interface LiteralNumericExpression : Expression {
   attribute double value;
 };
 
-interface LiteralRegExpExpression : LiteralExpression {
+interface LiteralRegExpExpression : Expression {
   attribute string pattern;
   attribute string flags;
 };
 
-interface LiteralStringExpression : LiteralExpression {
+interface LiteralStringExpression : Expression {
   attribute string value;
 };
 
 
 // other expressions
 
-interface ArrayExpression : PrimaryExpression {
+interface ArrayExpression : Expression {
   attribute (SpreadElement or Expression)?[] elements;
 };
 
@@ -323,7 +320,7 @@ interface ConditionalExpression : Expression {
   attribute Expression alternate;
 };
 
-interface IdentifierExpression : PrimaryExpression {
+interface IdentifierExpression : Expression {
   attribute Identifier identifier;
 };
 
@@ -346,11 +343,11 @@ interface StaticMemberExpression : MemberExpression {
   attribute string property;
 };
 
-interface TemplateString : PrimaryExpression {
+interface TemplateString : Expression {
   attribute (Expression or TemplateLiteral)[] elements;
 };
 
-interface ThisExpression : PrimaryExpression { };
+interface ThisExpression : Expression { };
 
 interface YieldExpression : Expression {
   attribute Expression? expression;
