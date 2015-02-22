@@ -216,14 +216,14 @@ interface FunctionBody : Node {
 
 interface FunctionDeclaration : Statement {
   attribute boolean isGenerator;
-  attribute Identifier name;
+  attribute BindingIdentifier name;
   attribute FunctionBody body;
 };
 FunctionDeclaration implements Function;
 
 interface FunctionExpression : Expression {
   attribute boolean isGenerator;
-  attribute Identifier? name;
+  attribute BindingIdentifier? name;
   attribute FunctionBody body;
 };
 FunctionExpression implements Function;
