@@ -135,15 +135,18 @@ interface BindingPropertyProperty : BindingProperty {
 // classes
 
 interface Class {
-  attribute BindingIdentifier name;
   attribute Expression? super;
   attribute ClassElement[] elements;
 };
 
-interface ClassExpression : Expression { };
+interface ClassExpression : Expression {
+  attribute BindingIdentifier? name;
+};
 ClassExpression implements Class;
 
-interface ClassDeclaration : Statement { };
+interface ClassDeclaration : Statement {
+  attribute BindingIdentifier name;
+};
 ClassDeclaration implements Class;
 
 interface ClassElement : Node {
