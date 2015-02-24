@@ -343,9 +343,9 @@ interface StaticMemberExpression : MemberExpression {
   attribute string property;
 };
 
-interface TemplateString : Expression {
+interface TemplateExpression : Expression {
   attribute Expression? tag;
-  attribute (Expression or TemplateLiteral)[] elements;
+  attribute (Expression or TemplateElement)[] elements;
 };
 
 interface ThisExpression : Expression { };
@@ -495,7 +495,7 @@ interface SwitchDefault : Node {
   attribute Statement[] consequent;
 };
 
-interface TemplateLiteral : Node {
+interface TemplateElement : Node {
   attribute string value;
 }
 
