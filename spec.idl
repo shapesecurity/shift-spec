@@ -158,7 +158,7 @@ interface ClassElement : Node {
 // modules
 
 interface Module : Node {
-  attribute (ImportDeclaration or ExportDeclaration or Statement)[] moduleItems;
+  attribute (ImportDeclaration or ExportDeclaration or Statement)[] items;
 };
 
 interface Import : ImportDeclaration {
@@ -190,7 +190,7 @@ interface Export : ExportDeclaration {
 };
 
 interface ExportDefault : ExportDeclaration {
-  attribute (FunctionDeclaration or ClassDeclaration or Expression) value;
+  attribute (FunctionDeclaration or ClassDeclaration or Expression) body;
 };
 
 interface ExportSpecifier : Node {
@@ -257,7 +257,7 @@ interface ShorthandProperty : ObjectProperty {
 };
 
 interface ComputedPropertyName : PropertyName {
-  attribute Expression value;
+  attribute Expression expression;
 };
 
 interface StaticPropertyName : PropertyName {
