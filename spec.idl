@@ -471,7 +471,7 @@ interface CatchClause : Node {
 };
 
 interface Directive : Node {
-  attribute string value;
+  attribute string rawValue;
 };
 
 interface Identifier : Node {
@@ -498,7 +498,7 @@ interface SwitchDefault : Node {
 };
 
 interface TemplateElement : Node {
-  attribute string value;
+  attribute string rawValue;
 }
 
 interface VariableDeclaration : Node {
