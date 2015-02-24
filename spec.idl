@@ -158,8 +158,7 @@ interface ClassElement : Node {
 // modules
 
 interface Module : Node {
-  attribute Directive[] directives;
-  attribute (ImportDeclaration or ExportDeclaration or Statement)[] sourceElements;
+  attribute (ImportDeclaration or ExportDeclaration or Statement)[] moduleItems;
 };
 
 interface Import : ImportDeclaration {
