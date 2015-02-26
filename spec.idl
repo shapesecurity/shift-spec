@@ -99,10 +99,10 @@ interface ExportDeclaration : Node { };
 
 // bindings
 
-typedef (ObjectBinding or ArrayBinding or BindingIdentifier or MemberExpression) Binding;
+typedef (ObjectBinding or ArrayBinding or BindingIdentifier) Binding;
 
 interface BindingWithDefault : Node {
-  attribute (ObjectBinding or ArrayBinding or BindingIdentifier) binding;
+  attribute Binding binding;
   attribute Expression init;
 };
 
@@ -297,7 +297,7 @@ interface ArrayExpression : Expression {
 
 interface AssignmentExpression : Expression {
   attribute AssignmentOperator operator;
-  attribute Binding binding;
+  attribute (Binding or MemberExpression) binding;
   attribute Expression expression;
 };
 
