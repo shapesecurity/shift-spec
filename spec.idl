@@ -499,7 +499,7 @@ interface SwitchDefault : Node {
 
 interface TemplateElement : Node {
   attribute string rawValue;
-}
+};
 
 interface VariableDeclaration : Node {
   attribute VariableDeclarationKind kind;
