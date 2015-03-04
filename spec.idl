@@ -35,6 +35,9 @@
 
 typedef (SpreadElement or Expression)[] Arguments;
 typedef DOMString string;
+typedef string Identifier;
+typedef string IdentifierName;
+typedef string Label;
 
 enum VariableDeclarationKind { "var", "let", "const" };
 
@@ -107,7 +110,7 @@ interface BindingWithDefault : Node {
 };
 
 interface BindingIdentifier : Node {
-  attribute Identifier identifier;
+  attribute Identifier name;
 };
 
 interface ArrayBinding : Node {
@@ -122,7 +125,7 @@ interface ObjectBinding : Node {
 interface BindingProperty : Node { };
 
 interface BindingPropertyIdentifier : BindingProperty {
-  attribute BindingIdentifier identifier;
+  attribute BindingIdentifier binding;
   attribute Expression? init;
 };
 
@@ -172,7 +175,7 @@ interface ImportNamespace : ImportDeclaration {
 };
 
 interface ImportSpecifier : Node {
-  attribute Identifier? name;
+  attribute IdentifierName? name;
   attribute BindingIdentifier binding;
 };
 
@@ -194,8 +197,8 @@ interface ExportDefault : ExportDeclaration {
 };
 
 interface ExportSpecifier : Node {
-  attribute Identifier? name;
-  attribute Identifier exportedName;
+  attribute IdentifierName? name;
+  attribute IdentifierName exportedName;
 };
 
 
@@ -323,7 +326,7 @@ interface ConditionalExpression : Expression {
 };
 
 interface IdentifierExpression : Expression {
-  attribute Identifier identifier;
+  attribute Identifier name;
 };
 
 interface NewExpression : Expression {
@@ -342,7 +345,7 @@ interface PrefixExpression : UnaryExpression {
 };
 
 interface StaticMemberExpression : MemberExpression {
-  attribute string property;
+  attribute IdentifierName property;
 };
 
 interface TemplateExpression : Expression {
@@ -368,11 +371,11 @@ interface BlockStatement : Statement {
 };
 
 interface BreakStatement : Statement {
-  attribute Identifier? label;
+  attribute Label? label;
 };
 
 interface ContinueStatement : Statement {
-  attribute Identifier? label;
+  attribute Label? label;
 };
 
 interface DebuggerStatement : Statement { };
@@ -410,7 +413,7 @@ interface IfStatement : Statement {
 };
 
 interface LabeledStatement : Statement {
-  attribute Identifier label;
+  attribute Label label;
   attribute Statement body;
 };
 
@@ -472,10 +475,6 @@ interface CatchClause : Node {
 
 interface Directive : Node {
   attribute string rawValue;
-};
-
-interface Identifier : Node {
-  attribute string name;
 };
 
 interface Script : Node {
