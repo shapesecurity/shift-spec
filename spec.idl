@@ -395,10 +395,7 @@ interface ForInStatement : IterationStatement {
   attribute Expression right;
 };
 
-interface ForOfStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding) left;
-  attribute Expression right;
-};
+interface ForOfStatement : ForInStatement { };
 
 interface ForStatement : IterationStatement {
   attribute (VariableDeclaration or Binding)? init;
