@@ -401,7 +401,7 @@ interface ForOfStatement : IterationStatement {
 };
 
 interface ForStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding)? init;
+  attribute (VariableDeclaration or Expression)? init;
   attribute Expression? test;
   attribute Expression? update;
 };
