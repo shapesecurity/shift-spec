@@ -204,15 +204,10 @@ interface ExportSpecifier : Node {
 
 // functions
 
-interface Function {
-  attribute (Binding or BindingWithDefault)[] parameters;
-  attribute BindingIdentifier? restParameter;
-};
-
 interface ArrowExpression : Expression {
+  attribute ParameterList parameters;
   attribute (FunctionBody or Expression) body;
 };
-ArrowExpression implements Function;
 
 interface FunctionBody : Node {
   attribute Directive[] directives;
@@ -222,16 +217,16 @@ interface FunctionBody : Node {
 interface FunctionDeclaration : Statement {
   attribute boolean isGenerator;
   attribute BindingIdentifier name;
+  attribute ParameterList parameters;
   attribute FunctionBody body;
 };
-FunctionDeclaration implements Function;
 
 interface FunctionExpression : Expression {
   attribute boolean isGenerator;
   attribute BindingIdentifier? name;
+  attribute ParameterList parameters;
   attribute FunctionBody body;
 };
-FunctionExpression implements Function;
 
 
 // object expressions
@@ -242,8 +237,8 @@ interface ObjectExpression : Expression {
 
 interface Method : MethodDefinition {
   attribute boolean isGenerator;
+  attribute ParameterList parameters;
 };
-Method implements Function;
 
 interface Getter : MethodDefinition { };
 
@@ -475,6 +470,11 @@ interface CatchClause : Node {
 
 interface Directive : Node {
   attribute string rawValue;
+};
+
+interface ParameterList {
+  attribute (Binding or BindingWithDefault)[] parameters;
+  attribute BindingIdentifier? restParameter;
 };
 
 interface Script : Node {
