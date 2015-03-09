@@ -33,6 +33,94 @@
 
 // supporting types
 
+enum Type {
+  "ArrayBinding",
+  "ArrayExpression",
+  "ArrowExpression",
+  "AssignmentExpression",
+  "BinaryExpression",
+  "BindingIdentifier",
+  "BindingPropertyIdentifier",
+  "BindingPropertyProperty",
+  "BindingWithDefault",
+  "Block",
+  "BlockStatement",
+  "BreakStatement",
+  "CallExpression",
+  "CatchClause",
+  "ClassDeclaration",
+  "ClassElement",
+  "ClassExpression",
+  "ComputedMemberExpression",
+  "ComputedPropertyName",
+  "ConditionalExpression",
+  "ContinueStatement",
+  "DataProperty",
+  "DebuggerStatement",
+  "Directive",
+  "DoWhileStatement",
+  "EmptyStatement",
+  "Export",
+  "ExportAllFrom",
+  "ExportDefault",
+  "ExportFrom",
+  "ExportSpecifier",
+  "ExpressionStatement",
+  "ForInStatement",
+  "ForOfStatement",
+  "ForStatement",
+  "FunctionBody",
+  "FunctionDeclaration",
+  "FunctionExpression",
+  "Getter",
+  "IdentifierExpression",
+  "IfStatement",
+  "Import",
+  "ImportNamespace",
+  "ImportSpecifier",
+  "LabeledStatement",
+  "LiteralBooleanExpression",
+  "LiteralInfinityExpression",
+  "LiteralNullExpression",
+  "LiteralNumericExpression",
+  "LiteralRegExpExpression",
+  "LiteralStringExpression",
+  "Method",
+  "Module",
+  "NewExpression",
+  "NewTargetExpression",
+  "ObjectBinding",
+  "ObjectExpression",
+  "ParameterList",
+  "PostfixExpression",
+  "PrefixExpression",
+  "ReturnStatement",
+  "Script",
+  "Setter",
+  "ShorthandProperty",
+  "SpreadElement",
+  "StaticMemberExpression",
+  "StaticPropertyName",
+  "Super",
+  "SwitchCase",
+  "SwitchDefault",
+  "SwitchStatement",
+  "SwitchStatementWithDefault",
+  "TemplateElement",
+  "TemplateExpression",
+  "ThisExpression",
+  "ThrowStatement",
+  "TryCatchStatement",
+  "TryFinallyStatement",
+  "VariableDeclaration",
+  "VariableDeclarationStatement",
+  "VariableDeclarator",
+  "WhileStatement",
+  "WithStatement",
+  "YieldExpression",
+  "YieldGeneratorExpression",
+};
+
 typedef (SpreadElement or Expression)[] Arguments;
 typedef DOMString string;
 typedef string Identifier;
@@ -67,7 +155,6 @@ interface SourceSpan {
 // node classes
 
 interface Node {
-  [TypeIndicator] readonly attribute Type type;
   attribute SourceSpan? loc;
 };
 
@@ -105,31 +192,39 @@ interface ExportDeclaration : Node { };
 typedef (ObjectBinding or ArrayBinding or BindingIdentifier or MemberExpression) Binding;
 
 interface BindingWithDefault : Node {
+  const Type type = "BindingWithDefault";
   attribute Binding binding;
   attribute Expression init;
 };
 
 interface BindingIdentifier : Node {
+  const Type type = "BindingIdentifier";
   attribute Identifier name;
 };
 
 interface ArrayBinding : Node {
+  const Type type = "ArrayBinding";
   attribute (Binding or BindingWithDefault)?[] elements;
   attribute Binding? restElement;
 };
 
 interface ObjectBinding : Node {
+  const Type type = "ObjectBinding";
   attribute BindingProperty[] properties;
 };
 
-interface BindingProperty : Node { };
+interface BindingProperty : Node {
+  const Type type = "BindingProperty";
+};
 
 interface BindingPropertyIdentifier : BindingProperty {
+  const Type type = "BindingPropertyIdentifier";
   attribute BindingIdentifier binding;
   attribute Expression? init;
 };
 
 interface BindingPropertyProperty : BindingProperty {
+  const Type type = "BindingPropertyProperty";
   attribute PropertyName name;
   attribute (Binding or BindingWithDefault) binding;
 };
@@ -143,16 +238,19 @@ interface Class {
 };
 
 interface ClassExpression : Expression {
+  const Type type = "ClassExpression";
   attribute BindingIdentifier? name;
 };
 ClassExpression implements Class;
 
 interface ClassDeclaration : Statement {
+  const Type type = "ClassDeclaration";
   attribute BindingIdentifier name;
 };
 ClassDeclaration implements Class;
 
 interface ClassElement : Node {
+  const Type type = "ClassElement";
   attribute boolean isStatic;
   attribute MethodDefinition method;
 };
@@ -161,42 +259,51 @@ interface ClassElement : Node {
 // modules
 
 interface Module : Node {
+  const Type type = "Module";
   attribute (ImportDeclaration or ExportDeclaration or Statement)[] items;
 };
 
 interface Import : ImportDeclaration {
+  const Type type = "Import";
   attribute BindingIdentifier? defaultBinding;
   attribute ImportSpecifier[] namedImports;
 };
 
 interface ImportNamespace : ImportDeclaration {
+  const Type type = "ImportNamespace";
   attribute BindingIdentifier? defaultBinding;
   attribute BindingIdentifier namespaceBinding;
 };
 
 interface ImportSpecifier : Node {
+  const Type type = "ImportSpecifier";
   attribute IdentifierName? name;
   attribute BindingIdentifier binding;
 };
 
 interface ExportAllFrom : ExportDeclaration {
+  const Type type = "ExportAllFrom";
   attribute string moduleSpecifier;
 };
 
 interface ExportFrom : ExportDeclaration {
+  const Type type = "ExportFrom";
   attribute ExportSpecifier[] namedExports;
   attribute string? moduleSpecifier;
 };
 
 interface Export : ExportDeclaration {
+  const Type type = "Export";
   attribute (FunctionDeclaration or ClassDeclaration or VariableDeclaration) declaration;
 };
 
 interface ExportDefault : ExportDeclaration {
+  const Type type = "ExportDefault";
   attribute (FunctionDeclaration or ClassDeclaration or Expression) body;
 };
 
 interface ExportSpecifier : Node {
+  const Type type = "ExportSpecifier";
   attribute IdentifierName? name;
   attribute IdentifierName exportedName;
 };
@@ -210,16 +317,19 @@ interface Function {
 };
 
 interface ArrowExpression : Expression {
+  const Type type = "ArrowExpression";
   attribute (FunctionBody or Expression) body;
 };
 ArrowExpression implements Function;
 
 interface FunctionBody : Node {
+  const Type type = "FunctionBody";
   attribute Directive[] directives;
   attribute Statement[] statements;
 };
 
 interface FunctionDeclaration : Statement {
+  const Type type = "FunctionDeclaration";
   attribute boolean isGenerator;
   attribute BindingIdentifier name;
   attribute FunctionBody body;
@@ -227,6 +337,7 @@ interface FunctionDeclaration : Statement {
 FunctionDeclaration implements Function;
 
 interface FunctionExpression : Expression {
+  const Type type = "FunctionExpression";
   attribute boolean isGenerator;
   attribute BindingIdentifier? name;
   attribute FunctionBody body;
@@ -237,33 +348,42 @@ FunctionExpression implements Function;
 // object expressions
 
 interface ObjectExpression : Expression {
+  const Type type = "ObjectExpression";
   attribute ObjectProperty[] properties;
 };
 
 interface Method : MethodDefinition {
+  const Type type = "Method";
   attribute boolean isGenerator;
 };
 Method implements Function;
 
-interface Getter : MethodDefinition { };
+interface Getter : MethodDefinition {
+  const Type type = "Getter";
+};
 
 interface Setter : MethodDefinition {
+  const Type type = "Setter";
   attribute Binding parameter;
 };
 
 interface DataProperty : NamedObjectProperty {
+  const Type type = "DataProperty";
   attribute Expression expression;
 };
 
 interface ShorthandProperty : ObjectProperty {
+  const Type type = "ShorthandProperty";
   attribute Identifier name;
 };
 
 interface ComputedPropertyName : PropertyName {
+  const Type type = "ComputedPropertyName";
   attribute Expression expression;
 };
 
 interface StaticPropertyName : PropertyName {
+  const Type type = "StaticPropertyName";
   attribute string value;
 };
 
@@ -271,23 +391,31 @@ interface StaticPropertyName : PropertyName {
 // literals
 
 interface LiteralBooleanExpression : Expression {
+  const Type type = "LiteralBooleanExpression";
   attribute boolean value;
 };
 
-interface LiteralInfinityExpression : Expression { };
+interface LiteralInfinityExpression : Expression {
+  const Type type = "LiteralInfinityExpression";
+};
 
-interface LiteralNullExpression : Expression { };
+interface LiteralNullExpression : Expression {
+  const Type type = "LiteralNullExpression";
+};
 
 interface LiteralNumericExpression : Expression {
+  const Type type = "LiteralNumericExpression";
   attribute double value;
 };
 
 interface LiteralRegExpExpression : Expression {
+  const Type type = "LiteralRegExpExpression";
   attribute string pattern;
   attribute string flags;
 };
 
 interface LiteralStringExpression : Expression {
+  const Type type = "LiteralStringExpression";
   attribute string value;
 };
 
@@ -295,71 +423,89 @@ interface LiteralStringExpression : Expression {
 // other expressions
 
 interface ArrayExpression : Expression {
+  const Type type = "ArrayExpression";
   attribute (SpreadElement or Expression)?[] elements;
 };
 
 interface AssignmentExpression : Expression {
+  const Type type = "AssignmentExpression";
   attribute AssignmentOperator operator;
   attribute Binding binding;
   attribute Expression expression;
 };
 
 interface BinaryExpression : Expression {
+  const Type type = "BinaryExpression";
   attribute BinaryOperator operator;
   attribute Expression left;
   attribute Expression right;
 };
 
 interface CallExpression : Expression {
+  const Type type = "CallExpression";
   attribute (Expression or Super) callee;
   attribute Arguments arguments;
 };
 
 interface ComputedMemberExpression : MemberExpression {
+  const Type type = "ComputedMemberExpression";
   attribute Expression expression;
 };
 
 interface ConditionalExpression : Expression {
+  const Type type = "ConditionalExpression";
   attribute Expression test;
   attribute Expression consequent;
   attribute Expression alternate;
 };
 
 interface IdentifierExpression : Expression {
+  const Type type = "IdentifierExpression";
   attribute Identifier name;
 };
 
 interface NewExpression : Expression {
+  const Type type = "NewExpression";
   attribute Expression callee;
   attribute Arguments arguments;
 };
 
-interface NewTargetExpression : Expression { };
+interface NewTargetExpression : Expression {
+  const Type type = "NewTargetExpression";
+};
 
 interface PostfixExpression : UnaryExpression {
+  const Type type = "PostfixExpression";
   attribute PostfixOperator operator;
 };
 
 interface PrefixExpression : UnaryExpression {
+  const Type type = "PrefixExpression";
   attribute PrefixOperator operator;
 };
 
 interface StaticMemberExpression : MemberExpression {
+  const Type type = "StaticMemberExpression";
   attribute IdentifierName property;
 };
 
 interface TemplateExpression : Expression {
+  const Type type = "TemplateExpression";
   attribute Expression? tag;
   attribute (Expression or TemplateElement)[] elements;
 };
 
-interface ThisExpression : Expression { };
+interface ThisExpression : Expression {
+  const Type type = "ThisExpression";
+};
 
 interface YieldExpression : Expression {
+  const Type type = "YieldExpression";
   attribute Expression? expression;
 };
 
 interface YieldGeneratorExpression : Expression {
+  const Type type = "YieldGeneratorExpression";
   attribute Expression expression;
 };
 
@@ -367,66 +513,83 @@ interface YieldGeneratorExpression : Expression {
 // other statements
 
 interface BlockStatement : Statement {
+  const Type type = "BlockStatement";
   attribute Block block;
 };
 
 interface BreakStatement : Statement {
+  const Type type = "BreakStatement";
   attribute Label? label;
 };
 
 interface ContinueStatement : Statement {
+  const Type type = "ContinueStatement";
   attribute Label? label;
 };
 
-interface DebuggerStatement : Statement { };
+interface DebuggerStatement : Statement {
+  const Type type = "DebuggerStatement";
+};
 
 interface DoWhileStatement : IterationStatement {
+  const Type type = "DoWhileStatement";
   attribute Expression test;
 };
 
-interface EmptyStatement : Statement { };
+interface EmptyStatement : Statement {
+  const Type type = "EmptyStatement";
+};
 
 interface ExpressionStatement : Statement {
+  const Type type = "ExpressionStatement";
   attribute Expression expression;
 };
 
 interface ForInStatement : IterationStatement {
+  const Type type = "ForInStatement";
   attribute (VariableDeclaration or Binding) left;
   attribute Expression right;
 };
 
 interface ForOfStatement : IterationStatement {
+  const Type type = "ForOfStatement";
   attribute (VariableDeclaration or Binding) left;
   attribute Expression right;
 };
 
 interface ForStatement : IterationStatement {
+  const Type type = "ForStatement";
   attribute (VariableDeclaration or Expression)? init;
   attribute Expression? test;
   attribute Expression? update;
 };
 
 interface IfStatement : Statement {
+  const Type type = "IfStatement";
   attribute Expression test;
   attribute Statement consequent;
   attribute Statement? alternate;
 };
 
 interface LabeledStatement : Statement {
+  const Type type = "LabeledStatement";
   attribute Label label;
   attribute Statement body;
 };
 
 interface ReturnStatement : Statement {
+  const Type type = "ReturnStatement";
   attribute Expression? expression;
 };
 
 interface SwitchStatement : Statement {
+  const Type type = "SwitchStatement";
   attribute Expression discriminant;
   attribute SwitchCase[] cases;
 };
 
 interface SwitchStatementWithDefault : Statement {
+  const Type type = "SwitchStatementWithDefault";
   attribute Expression discriminant;
   attribute SwitchCase[] preDefaultCases;
   attribute SwitchDefault defaultCase;
@@ -434,29 +597,35 @@ interface SwitchStatementWithDefault : Statement {
 };
 
 interface ThrowStatement : Statement {
+  const Type type = "ThrowStatement";
   attribute Expression expression;
 };
 
 interface TryCatchStatement : Statement {
+  const Type type = "TryCatchStatement";
   attribute Block body;
   attribute CatchClause catchClause;
 };
 
 interface TryFinallyStatement : Statement {
+  const Type type = "TryFinallyStatement";
   attribute Block body;
   attribute CatchClause? catchClause;
   attribute Block finalizer;
 };
 
 interface VariableDeclarationStatement : Statement {
+  const Type type = "VariableDeclarationStatement";
   attribute VariableDeclaration declaration;
 };
 
 interface WhileStatement : IterationStatement {
+  const Type type = "WhileStatement";
   attribute Expression test;
 };
 
 interface WithStatement : Statement {
+  const Type type = "WithStatement";
   attribute Expression _object;
   attribute Statement body;
 };
@@ -465,47 +634,59 @@ interface WithStatement : Statement {
 // other nodes
 
 interface Block : Node {
+  const Type type = "Block";
   attribute Statement[] statements;
 };
 
 interface CatchClause : Node {
+  const Type type = "CatchClause";
   attribute Binding binding;
   attribute Block body;
 };
 
 interface Directive : Node {
+  const Type type = "Directive";
   attribute string rawValue;
 };
 
 interface Script : Node {
+  const Type type = "Script";
   attribute FunctionBody body;
 };
 
 interface SpreadElement : Node {
+  const Type type = "SpreadElement";
   attribute Expression expression;
 };
 
-interface Super : Node { };
+interface Super : Node {
+  const Type type = "Super";
+};
 
 interface SwitchCase : Node {
+  const Type type = "SwitchCase";
   attribute Expression test;
   attribute Statement[] consequent;
 };
 
 interface SwitchDefault : Node {
+  const Type type = "SwitchDefault";
   attribute Statement[] consequent;
 };
 
 interface TemplateElement : Node {
+  const Type type = "TemplateElement";
   attribute string rawValue;
 };
 
 interface VariableDeclaration : Node {
+  const Type type = "VariableDeclaration";
   attribute VariableDeclarationKind kind;
   [NonEmpty] attribute VariableDeclarator[] declarators;
 };
 
 interface VariableDeclarator : Node {
+  const Type type = "VariableDeclarator";
   attribute Binding binding;
   attribute Expression? init;
 };
