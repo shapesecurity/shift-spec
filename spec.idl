@@ -105,7 +105,7 @@ interface ExportDeclaration : Node { };
 typedef (ObjectBinding or ArrayBinding or BindingIdentifier or MemberExpression) Binding;
 
 interface BindingWithDefault : Node {
-  attribute (ObjectBinding or ArrayBinding or BindingIdentifier) binding;
+  attribute Binding binding;
   attribute Expression init;
 };
 
