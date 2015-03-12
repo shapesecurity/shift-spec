@@ -201,49 +201,12 @@ interface ExportSpecifier : Node {
   attribute IdentifierName exportedName;
 };
 
-
-// functions
-
-interface Function {
-  attribute (Binding or BindingWithDefault)[] parameters;
-  attribute BindingIdentifier? restParameter;
-};
-
-interface ArrowExpression : Expression {
-  attribute (FunctionBody or Expression) body;
-};
-ArrowExpression implements Function;
-
-interface FunctionBody : Node {
-  attribute Directive[] directives;
-  attribute Statement[] statements;
-};
-
-interface FunctionDeclaration : Statement {
-  attribute boolean isGenerator;
-  attribute BindingIdentifier name;
-  attribute FunctionBody body;
-};
-FunctionDeclaration implements Function;
-
-interface FunctionExpression : Expression {
-  attribute boolean isGenerator;
-  attribute BindingIdentifier? name;
-  attribute FunctionBody body;
-};
-FunctionExpression implements Function;
-
-
-// object expressions
-
-interface ObjectExpression : Expression {
-  attribute ObjectProperty[] properties;
-};
+// property definition
 
 interface Method : MethodDefinition {
   attribute boolean isGenerator;
+  attribute FormalParameters params;
 };
-Method implements Function;
 
 interface Getter : MethodDefinition { };
 
@@ -298,6 +261,11 @@ interface ArrayExpression : Expression {
   attribute (SpreadElement or Expression)?[] elements;
 };
 
+interface ArrowExpression : Expression {
+  attribute FormalParameters params;
+  attribute (FunctionBody or Expression) body;
+};
+
 interface AssignmentExpression : Expression {
   attribute AssignmentOperator operator;
   attribute Binding binding;
@@ -325,6 +293,13 @@ interface ConditionalExpression : Expression {
   attribute Expression alternate;
 };
 
+interface FunctionExpression : Expression {
+  attribute boolean isGenerator;
+  attribute BindingIdentifier? name;
+  attribute FormalParameters params;
+  attribute FunctionBody body;
+};
+
 interface IdentifierExpression : Expression {
   attribute Identifier name;
 };
@@ -335,6 +310,10 @@ interface NewExpression : Expression {
 };
 
 interface NewTargetExpression : Expression { };
+
+interface ObjectExpression : Expression {
+  attribute ObjectProperty[] properties;
+};
 
 interface PostfixExpression : UnaryExpression {
   attribute PostfixOperator operator;
@@ -475,6 +454,23 @@ interface CatchClause : Node {
 
 interface Directive : Node {
   attribute string rawValue;
+};
+
+interface FormalParameters {
+  attribute (Binding or BindingWithDefault)[] items;
+  attribute BindingIdentifier? rest;
+};
+
+interface FunctionBody : Node {
+  attribute Directive[] directives;
+  attribute Statement[] statements;
+};
+
+interface FunctionDeclaration : Statement {
+  attribute boolean isGenerator;
+  attribute BindingIdentifier name;
+  attribute FormalParameters params;
+  attribute FunctionBody body;
 };
 
 interface Script : Node {
