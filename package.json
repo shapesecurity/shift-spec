@@ -9,6 +9,7 @@
     "url": "https://github.com/shapesecurity/shift-spec.git"
   },
   "scripts": {
+    "build": "node src/generate-spec.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
