@@ -211,7 +211,7 @@ interface Method : MethodDefinition {
 interface Getter : MethodDefinition { };
 
 interface Setter : MethodDefinition {
-  attribute Binding parameter;
+  attribute Binding param;
 };
 
 interface DataProperty : NamedObjectProperty {
