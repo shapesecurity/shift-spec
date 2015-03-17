@@ -28,9 +28,8 @@ standard with the following extended attributes:
 ## Status
 
 This specification currently supports ECMAScript as defined in ECMA-262 version
-5.1, which is the current version of ECMA-262 at the time of this writing.
-Changes necessary to support ECMA-262 version 6 are being tracked on the `es6`
-branch.
+6 (as of release candidate 2), which is the upcoming version of ECMA-262 at the
+time of this writing.
 
 
 ## Implementations
