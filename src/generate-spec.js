@@ -89,6 +89,17 @@ declarations.forEach(function (declaration) {
 
 var notFinal = {};
 
+function has(member, name) {
+  if (member.ea.length != 0) {
+    for (var i = 0; i < member.ea.length; i++) {
+      if (member.ea[i].name === name) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function inherits(name, parent) {
   if (!Array.isArray(database["$" + parent])) {
     throw new Error("Inheriting non-interface");
@@ -96,7 +107,17 @@ function inherits(name, parent) {
   notFinal["$" + parent] = notFinal["$" + parent] || [];
   notFinal["$" + parent].push(name);
 
-  database["$" + name] = database["$" + parent].concat(database["$" + name]);
+  function hasTailIndicator(member) {
+    return has(member, "Tail");
+  }
+
+  function hasNoTailIndicator(member) {
+    return !has(member, "Tail");
+  }
+
+  var tail = database["$" + parent].filter(hasTailIndicator).concat(database["$" + name].filter(hasTailIndicator));
+
+  database["$" + name] = database["$" + parent].filter(hasNoTailIndicator).concat(database["$" + name].filter(hasNoTailIndicator)).concat(tail);
 }
 // Step 2. process inheritance
 declarations.forEach(function (declaration) {
@@ -137,18 +158,18 @@ var content = "\
 exports.default = (function() {\n\
   var SPEC = {};\n\
 \n\
-  var BOOLEAN = { type: \"Boolean\" };\n\
-  var DOUBLE = { type: \"Number\" };\n\
-  var STRING = { type: \"String\" };\n\n\
-  function Maybe(arg) { return { type: \"Maybe\", argument: arg }; }\n\n\
-  function List(arg) { return { type: \"List\", argument: arg }; }\n\n\
-  function Union() { return { type: \"Union\", arguments: [].slice.call(arguments, 0) }; }\n\n\
+  var BOOLEAN = { typeName: \"Boolean\" };\n\
+  var DOUBLE = { typeName: \"Number\" };\n\
+  var STRING = { typeName: \"String\" };\n\n\
+  function Maybe(arg) { return { typeName: \"Maybe\", argument: arg }; }\n\n\
+  function List(arg) { return { typeName: \"List\", argument: arg }; }\n\n\
+  function Union() { return { typeName: \"Union\", arguments: [].slice.call(arguments, 0) }; }\n\n\
 \n";
 
 
 function renderEnum(declaration) {
   var name = declaration.name;
-  var result = ["  var " + declaration.name + " = {\n    type: \"Enum\",\n    values: [" + declaration.values.join(", ") + "]\n  };\n"];
+  var result = ["  var " + declaration.name + " = {\n    typeName: \"Enum\",\n    values: [" + declaration.values.join(", ") + "]\n  };\n"];
   return result.join("\n") + "\n";
 }
 
@@ -182,52 +203,26 @@ declarations.forEach(function (declaration) {
 
 content += "\n";
 
-
 function renderInterface(name, members) {
   var result = [];
   if ({}.hasOwnProperty.call(notFinal, "$" + name)) {
     return "";
   } else {
+    result.push("  " + name + ".typeName = \"" + name + "\";");
+
     if (members.length > 0) {
+      result.push("  " + name + ".fields = [");
       members.forEach(function (member) {
-        var isTypeIndicator = false;
-        if (member.ea.length != 0) {
-          member.ea.forEach(function (ea) {
-            if (ea.name === "TypeIndicator") {
-              isTypeIndicator = true;
-            }
-          });
-        }
-        if (isTypeIndicator) {
-          result.push("  " + name + ".type = \"" + name + "\";");
-        }
-      });
-    }
-    if (members.length > 0) {
-      members.forEach(function (member) {
-        if (member.member.name === "loc") {
-          return;
-        }
-        var isTypeIndicator = false;
-        if (member.ea.length != 0) {
-          member.ea.forEach(function (ea) {
-            if (ea.name === "TypeIndicator") {
-              isTypeIndicator = true;
-            }
-          });
-        }
+        var isTypeIndicator = has(member, "TypeIndicator");
         if (!isTypeIndicator) {
-          result.push("  " + name + "." + member.member.name.replace(/^_*/, "") + " = " + renderType(member.member.t) + ";");
+          result.push("    { name: \"" + member.member.name.replace(/^_*/, "") + "\", type: " + renderType(member.member.t) + " },");
+        } else {
+          result.push("    { name: \"" + member.member.name.replace(/^_*/, "") + "\", value: \"" + name + "\" },");
         }
       });
-    }
-    if (members.length > 0) {
-      members.forEach(function (member) {
-        if (member.member.name !== "loc") {
-          return;
-        }
-        result.push("  " + name + "." + member.member.name.replace(/^_*/, "") + " = " + renderType(member.member.t) + ";");
-      });
+      result.push("  ];");
+    } else {
+      result.push("  " + name + ".fields = [];");
     }
   }
   result.push("", "");

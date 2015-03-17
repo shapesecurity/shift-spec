@@ -63,6 +63,11 @@ interface SourceSpan {
   attribute SourceLocation end;
 };
 
+interface Function {
+  attribute boolean isGenerator;
+  [Tail] attribute FormalParameters params;
+  [Tail] attribute FunctionBody body;
+};
 
 // node classes
 
@@ -72,8 +77,8 @@ interface Node {
 };
 
 interface Statement : Node { };
-interface IterationStatement : Node {
-  attribute Statement body;
+interface IterationStatement : Statement {
+  [Tail] attribute Statement body;
 };
 
 interface Expression : Node { };
@@ -91,7 +96,6 @@ interface NamedObjectProperty : ObjectProperty {
   attribute PropertyName name;
 };
 interface MethodDefinition : NamedObjectProperty {
-  attribute FunctionBody body;
 };
 
 interface ImportDeclaration : Node {
@@ -138,8 +142,8 @@ interface BindingPropertyProperty : BindingProperty {
 // classes
 
 interface Class {
-  attribute Expression? super;
-  attribute ClassElement[] elements;
+  [Tail] attribute Expression? super;
+  [Tail] attribute ClassElement[] elements;
 };
 
 interface ClassExpression : Expression {
@@ -206,12 +210,16 @@ interface ExportSpecifier : Node {
 interface Method : MethodDefinition {
   attribute boolean isGenerator;
   attribute FormalParameters params;
+  attribute FunctionBody body;
 };
 
-interface Getter : MethodDefinition { };
+interface Getter : MethodDefinition {
+  attribute FunctionBody body;
+};
 
 interface Setter : MethodDefinition {
   attribute Binding param;
+  attribute FunctionBody body;
 };
 
 interface DataProperty : NamedObjectProperty {
@@ -294,11 +302,9 @@ interface ConditionalExpression : Expression {
 };
 
 interface FunctionExpression : Expression {
-  attribute boolean isGenerator;
   attribute BindingIdentifier? name;
-  attribute FormalParameters params;
-  attribute FunctionBody body;
 };
+FunctionExpression implements Function;
 
 interface IdentifierExpression : Expression {
   attribute Identifier name;
@@ -360,7 +366,7 @@ interface ContinueStatement : Statement {
 interface DebuggerStatement : Statement { };
 
 interface DoWhileStatement : IterationStatement {
-  attribute Expression test;
+  [Tail] attribute Expression test;
 };
 
 interface EmptyStatement : Statement { };
@@ -456,7 +462,7 @@ interface Directive : Node {
   attribute string rawValue;
 };
 
-interface FormalParameters {
+interface FormalParameters : Node {
   attribute (Binding or BindingWithDefault)[] items;
   attribute BindingIdentifier? rest;
 };
@@ -467,11 +473,9 @@ interface FunctionBody : Node {
 };
 
 interface FunctionDeclaration : Statement {
-  attribute boolean isGenerator;
   attribute BindingIdentifier name;
-  attribute FormalParameters params;
-  attribute FunctionBody body;
 };
+FunctionDeclaration implements Function;
 
 interface Script : Node {
   attribute FunctionBody body;
