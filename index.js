@@ -20,39 +20,39 @@
 exports.default = (function() {
   var SPEC = {};
 
-  var BOOLEAN = { type: "Boolean" };
-  var DOUBLE = { type: "Number" };
-  var STRING = { type: "String" };
+  var BOOLEAN = { typeName: "Boolean" };
+  var DOUBLE = { typeName: "Number" };
+  var STRING = { typeName: "String" };
 
-  function Maybe(arg) { return { type: "Maybe", argument: arg }; }
+  function Maybe(arg) { return { typeName: "Maybe", argument: arg }; }
 
-  function List(arg) { return { type: "List", argument: arg }; }
+  function List(arg) { return { typeName: "List", argument: arg }; }
 
-  function Union() { return { type: "Union", arguments: [].slice.call(arguments, 0) }; }
+  function Union() { return { typeName: "Union", arguments: [].slice.call(arguments, 0) }; }
 
 
   var VariableDeclarationKind = {
-    type: "Enum",
+    typeName: "Enum",
     values: ["var", "let", "const"]
   };
 
   var AssignmentOperator = {
-    type: "Enum",
+    typeName: "Enum",
     values: ["=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="]
   };
 
   var BinaryOperator = {
-    type: "Enum",
+    typeName: "Enum",
     values: ["==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<", ">>", ">>>", "+", "-", "*", "/", "%", ",", "||", "&&", "|", "^", "&"]
   };
 
   var PrefixOperator = {
-    type: "Enum",
+    typeName: "Enum",
     values: ["+", "-", "!", "~", "typeof", "void", "delete", "++", "--"]
   };
 
   var PostfixOperator = {
-    type: "Enum",
+    typeName: "Enum",
     values: ["++", "--"]
   };
 
@@ -156,417 +156,681 @@ exports.default = (function() {
   var UnaryExpression = Union(PostfixExpression, PrefixExpression);
   var Expression = Union(UnaryExpression, MemberExpression, ClassExpression, LiteralBooleanExpression, LiteralInfinityExpression, LiteralNullExpression, LiteralNumericExpression, LiteralRegExpExpression, LiteralStringExpression, ArrayExpression, ArrowExpression, AssignmentExpression, BinaryExpression, CallExpression, ConditionalExpression, FunctionExpression, IdentifierExpression, NewExpression, NewTargetExpression, ObjectExpression, TemplateExpression, ThisExpression, YieldExpression, YieldGeneratorExpression);
   var IterationStatement = Union(DoWhileStatement, ForInStatement, ForOfStatement, ForStatement, WhileStatement);
-  var Statement = Union(ClassDeclaration, BlockStatement, BreakStatement, ContinueStatement, DebuggerStatement, EmptyStatement, ExpressionStatement, IfStatement, LabeledStatement, ReturnStatement, SwitchStatement, SwitchStatementWithDefault, ThrowStatement, TryCatchStatement, TryFinallyStatement, VariableDeclarationStatement, WithStatement, FunctionDeclaration);
-  var Node = Union(Statement, IterationStatement, Expression, PropertyName, ObjectProperty, ImportDeclaration, ExportDeclaration, BindingWithDefault, BindingIdentifier, ArrayBinding, ObjectBinding, BindingProperty, ClassElement, Module, ImportSpecifier, ExportSpecifier, Block, CatchClause, Directive, FunctionBody, Script, SpreadElement, Super, SwitchCase, SwitchDefault, TemplateElement, VariableDeclaration, VariableDeclarator);
-
-  SourceLocation.line = DOUBLE;
-  SourceLocation.column = DOUBLE;
-  SourceLocation.offset = DOUBLE;
-
-  SourceSpan.source = Maybe(STRING);
-  SourceSpan.start = SourceLocation;
-  SourceSpan.end = SourceLocation;
-
-  BindingWithDefault.type = "BindingWithDefault";
-  BindingWithDefault.binding = Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  BindingWithDefault.init = Expression;
-  BindingWithDefault.loc = Maybe(SourceSpan);
-
-  BindingIdentifier.type = "BindingIdentifier";
-  BindingIdentifier.name = STRING;
-  BindingIdentifier.loc = Maybe(SourceSpan);
-
-  ArrayBinding.type = "ArrayBinding";
-  ArrayBinding.elements = List(Maybe(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault)));
-  ArrayBinding.restElement = Maybe(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression));
-  ArrayBinding.loc = Maybe(SourceSpan);
-
-  ObjectBinding.type = "ObjectBinding";
-  ObjectBinding.properties = List(BindingProperty);
-  ObjectBinding.loc = Maybe(SourceSpan);
-
-  BindingPropertyIdentifier.type = "BindingPropertyIdentifier";
-  BindingPropertyIdentifier.binding = BindingIdentifier;
-  BindingPropertyIdentifier.init = Maybe(Expression);
-  BindingPropertyIdentifier.loc = Maybe(SourceSpan);
-
-  BindingPropertyProperty.type = "BindingPropertyProperty";
-  BindingPropertyProperty.name = PropertyName;
-  BindingPropertyProperty.binding = Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault);
-  BindingPropertyProperty.loc = Maybe(SourceSpan);
-
-  ClassExpression.type = "ClassExpression";
-  ClassExpression.super = Maybe(Expression);
-  ClassExpression.elements = List(ClassElement);
-  ClassExpression.name = Maybe(BindingIdentifier);
-  ClassExpression.loc = Maybe(SourceSpan);
-
-  ClassDeclaration.type = "ClassDeclaration";
-  ClassDeclaration.super = Maybe(Expression);
-  ClassDeclaration.elements = List(ClassElement);
-  ClassDeclaration.name = BindingIdentifier;
-  ClassDeclaration.loc = Maybe(SourceSpan);
-
-  ClassElement.type = "ClassElement";
-  ClassElement.isStatic = BOOLEAN;
-  ClassElement.method = MethodDefinition;
-  ClassElement.loc = Maybe(SourceSpan);
-
-  Module.type = "Module";
-  Module.items = List(Union(ImportDeclaration, ExportDeclaration, Statement));
-  Module.loc = Maybe(SourceSpan);
-
-  Import.type = "Import";
-  Import.moduleSpecifier = STRING;
-  Import.defaultBinding = Maybe(BindingIdentifier);
-  Import.namedImports = List(ImportSpecifier);
-  Import.loc = Maybe(SourceSpan);
-
-  ImportNamespace.type = "ImportNamespace";
-  ImportNamespace.moduleSpecifier = STRING;
-  ImportNamespace.defaultBinding = Maybe(BindingIdentifier);
-  ImportNamespace.namespaceBinding = BindingIdentifier;
-  ImportNamespace.loc = Maybe(SourceSpan);
-
-  ImportSpecifier.type = "ImportSpecifier";
-  ImportSpecifier.name = Maybe(STRING);
-  ImportSpecifier.binding = BindingIdentifier;
-  ImportSpecifier.loc = Maybe(SourceSpan);
-
-  ExportAllFrom.type = "ExportAllFrom";
-  ExportAllFrom.moduleSpecifier = STRING;
-  ExportAllFrom.loc = Maybe(SourceSpan);
-
-  ExportFrom.type = "ExportFrom";
-  ExportFrom.namedExports = List(ExportSpecifier);
-  ExportFrom.moduleSpecifier = Maybe(STRING);
-  ExportFrom.loc = Maybe(SourceSpan);
-
-  Export.type = "Export";
-  Export.declaration = Union(FunctionDeclaration, ClassDeclaration, VariableDeclaration);
-  Export.loc = Maybe(SourceSpan);
-
-  ExportDefault.type = "ExportDefault";
-  ExportDefault.body = Union(FunctionDeclaration, ClassDeclaration, Expression);
-  ExportDefault.loc = Maybe(SourceSpan);
-
-  ExportSpecifier.type = "ExportSpecifier";
-  ExportSpecifier.name = Maybe(STRING);
-  ExportSpecifier.exportedName = STRING;
-  ExportSpecifier.loc = Maybe(SourceSpan);
-
-  Method.type = "Method";
-  Method.name = PropertyName;
-  Method.body = FunctionBody;
-  Method.isGenerator = BOOLEAN;
-  Method.params = FormalParameters;
-  Method.loc = Maybe(SourceSpan);
-
-  Getter.type = "Getter";
-  Getter.name = PropertyName;
-  Getter.body = FunctionBody;
-  Getter.loc = Maybe(SourceSpan);
-
-  Setter.type = "Setter";
-  Setter.name = PropertyName;
-  Setter.body = FunctionBody;
-  Setter.param = Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  Setter.loc = Maybe(SourceSpan);
-
-  DataProperty.type = "DataProperty";
-  DataProperty.name = PropertyName;
-  DataProperty.expression = Expression;
-  DataProperty.loc = Maybe(SourceSpan);
-
-  ShorthandProperty.type = "ShorthandProperty";
-  ShorthandProperty.name = STRING;
-  ShorthandProperty.loc = Maybe(SourceSpan);
-
-  ComputedPropertyName.type = "ComputedPropertyName";
-  ComputedPropertyName.expression = Expression;
-  ComputedPropertyName.loc = Maybe(SourceSpan);
-
-  StaticPropertyName.type = "StaticPropertyName";
-  StaticPropertyName.value = STRING;
-  StaticPropertyName.loc = Maybe(SourceSpan);
-
-  LiteralBooleanExpression.type = "LiteralBooleanExpression";
-  LiteralBooleanExpression.value = BOOLEAN;
-  LiteralBooleanExpression.loc = Maybe(SourceSpan);
-
-  LiteralInfinityExpression.type = "LiteralInfinityExpression";
-  LiteralInfinityExpression.loc = Maybe(SourceSpan);
-
-  LiteralNullExpression.type = "LiteralNullExpression";
-  LiteralNullExpression.loc = Maybe(SourceSpan);
-
-  LiteralNumericExpression.type = "LiteralNumericExpression";
-  LiteralNumericExpression.value = DOUBLE;
-  LiteralNumericExpression.loc = Maybe(SourceSpan);
-
-  LiteralRegExpExpression.type = "LiteralRegExpExpression";
-  LiteralRegExpExpression.pattern = STRING;
-  LiteralRegExpExpression.flags = STRING;
-  LiteralRegExpExpression.loc = Maybe(SourceSpan);
-
-  LiteralStringExpression.type = "LiteralStringExpression";
-  LiteralStringExpression.value = STRING;
-  LiteralStringExpression.loc = Maybe(SourceSpan);
-
-  ArrayExpression.type = "ArrayExpression";
-  ArrayExpression.elements = List(Maybe(Union(SpreadElement, Expression)));
-  ArrayExpression.loc = Maybe(SourceSpan);
-
-  ArrowExpression.type = "ArrowExpression";
-  ArrowExpression.params = FormalParameters;
-  ArrowExpression.body = Union(FunctionBody, Expression);
-  ArrowExpression.loc = Maybe(SourceSpan);
-
-  AssignmentExpression.type = "AssignmentExpression";
-  AssignmentExpression.operator = AssignmentOperator;
-  AssignmentExpression.binding = Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  AssignmentExpression.expression = Expression;
-  AssignmentExpression.loc = Maybe(SourceSpan);
-
-  BinaryExpression.type = "BinaryExpression";
-  BinaryExpression.operator = BinaryOperator;
-  BinaryExpression.left = Expression;
-  BinaryExpression.right = Expression;
-  BinaryExpression.loc = Maybe(SourceSpan);
-
-  CallExpression.type = "CallExpression";
-  CallExpression.callee = Union(Expression, Super);
-  CallExpression.arguments = List(Union(SpreadElement, Expression));
-  CallExpression.loc = Maybe(SourceSpan);
-
-  ComputedMemberExpression.type = "ComputedMemberExpression";
-  ComputedMemberExpression.object = Union(Expression, Super);
-  ComputedMemberExpression.expression = Expression;
-  ComputedMemberExpression.loc = Maybe(SourceSpan);
-
-  ConditionalExpression.type = "ConditionalExpression";
-  ConditionalExpression.test = Expression;
-  ConditionalExpression.consequent = Expression;
-  ConditionalExpression.alternate = Expression;
-  ConditionalExpression.loc = Maybe(SourceSpan);
-
-  FunctionExpression.type = "FunctionExpression";
-  FunctionExpression.isGenerator = BOOLEAN;
-  FunctionExpression.name = Maybe(BindingIdentifier);
-  FunctionExpression.params = FormalParameters;
-  FunctionExpression.body = FunctionBody;
-  FunctionExpression.loc = Maybe(SourceSpan);
-
-  IdentifierExpression.type = "IdentifierExpression";
-  IdentifierExpression.name = STRING;
-  IdentifierExpression.loc = Maybe(SourceSpan);
-
-  NewExpression.type = "NewExpression";
-  NewExpression.callee = Expression;
-  NewExpression.arguments = List(Union(SpreadElement, Expression));
-  NewExpression.loc = Maybe(SourceSpan);
-
-  NewTargetExpression.type = "NewTargetExpression";
-  NewTargetExpression.loc = Maybe(SourceSpan);
-
-  ObjectExpression.type = "ObjectExpression";
-  ObjectExpression.properties = List(ObjectProperty);
-  ObjectExpression.loc = Maybe(SourceSpan);
-
-  PostfixExpression.type = "PostfixExpression";
-  PostfixExpression.operand = Expression;
-  PostfixExpression.operator = PostfixOperator;
-  PostfixExpression.loc = Maybe(SourceSpan);
-
-  PrefixExpression.type = "PrefixExpression";
-  PrefixExpression.operand = Expression;
-  PrefixExpression.operator = PrefixOperator;
-  PrefixExpression.loc = Maybe(SourceSpan);
-
-  StaticMemberExpression.type = "StaticMemberExpression";
-  StaticMemberExpression.object = Union(Expression, Super);
-  StaticMemberExpression.property = STRING;
-  StaticMemberExpression.loc = Maybe(SourceSpan);
-
-  TemplateExpression.type = "TemplateExpression";
-  TemplateExpression.tag = Maybe(Expression);
-  TemplateExpression.elements = List(Union(Expression, TemplateElement));
-  TemplateExpression.loc = Maybe(SourceSpan);
-
-  ThisExpression.type = "ThisExpression";
-  ThisExpression.loc = Maybe(SourceSpan);
-
-  YieldExpression.type = "YieldExpression";
-  YieldExpression.expression = Maybe(Expression);
-  YieldExpression.loc = Maybe(SourceSpan);
-
-  YieldGeneratorExpression.type = "YieldGeneratorExpression";
-  YieldGeneratorExpression.expression = Expression;
-  YieldGeneratorExpression.loc = Maybe(SourceSpan);
-
-  BlockStatement.type = "BlockStatement";
-  BlockStatement.block = Block;
-  BlockStatement.loc = Maybe(SourceSpan);
-
-  BreakStatement.type = "BreakStatement";
-  BreakStatement.label = Maybe(STRING);
-  BreakStatement.loc = Maybe(SourceSpan);
-
-  ContinueStatement.type = "ContinueStatement";
-  ContinueStatement.label = Maybe(STRING);
-  ContinueStatement.loc = Maybe(SourceSpan);
-
-  DebuggerStatement.type = "DebuggerStatement";
-  DebuggerStatement.loc = Maybe(SourceSpan);
-
-  DoWhileStatement.type = "DoWhileStatement";
-  DoWhileStatement.body = Statement;
-  DoWhileStatement.test = Expression;
-  DoWhileStatement.loc = Maybe(SourceSpan);
-
-  EmptyStatement.type = "EmptyStatement";
-  EmptyStatement.loc = Maybe(SourceSpan);
-
-  ExpressionStatement.type = "ExpressionStatement";
-  ExpressionStatement.expression = Expression;
-  ExpressionStatement.loc = Maybe(SourceSpan);
-
-  ForInStatement.type = "ForInStatement";
-  ForInStatement.body = Statement;
-  ForInStatement.left = Union(VariableDeclaration, ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  ForInStatement.right = Expression;
-  ForInStatement.loc = Maybe(SourceSpan);
-
-  ForOfStatement.type = "ForOfStatement";
-  ForOfStatement.body = Statement;
-  ForOfStatement.left = Union(VariableDeclaration, ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  ForOfStatement.right = Expression;
-  ForOfStatement.loc = Maybe(SourceSpan);
-
-  ForStatement.type = "ForStatement";
-  ForStatement.body = Statement;
-  ForStatement.init = Maybe(Union(VariableDeclaration, Expression));
-  ForStatement.test = Maybe(Expression);
-  ForStatement.update = Maybe(Expression);
-  ForStatement.loc = Maybe(SourceSpan);
-
-  IfStatement.type = "IfStatement";
-  IfStatement.test = Expression;
-  IfStatement.consequent = Statement;
-  IfStatement.alternate = Maybe(Statement);
-  IfStatement.loc = Maybe(SourceSpan);
-
-  LabeledStatement.type = "LabeledStatement";
-  LabeledStatement.label = STRING;
-  LabeledStatement.body = Statement;
-  LabeledStatement.loc = Maybe(SourceSpan);
-
-  ReturnStatement.type = "ReturnStatement";
-  ReturnStatement.expression = Maybe(Expression);
-  ReturnStatement.loc = Maybe(SourceSpan);
-
-  SwitchStatement.type = "SwitchStatement";
-  SwitchStatement.discriminant = Expression;
-  SwitchStatement.cases = List(SwitchCase);
-  SwitchStatement.loc = Maybe(SourceSpan);
-
-  SwitchStatementWithDefault.type = "SwitchStatementWithDefault";
-  SwitchStatementWithDefault.discriminant = Expression;
-  SwitchStatementWithDefault.preDefaultCases = List(SwitchCase);
-  SwitchStatementWithDefault.defaultCase = SwitchDefault;
-  SwitchStatementWithDefault.postDefaultCases = List(SwitchCase);
-  SwitchStatementWithDefault.loc = Maybe(SourceSpan);
-
-  ThrowStatement.type = "ThrowStatement";
-  ThrowStatement.expression = Expression;
-  ThrowStatement.loc = Maybe(SourceSpan);
-
-  TryCatchStatement.type = "TryCatchStatement";
-  TryCatchStatement.body = Block;
-  TryCatchStatement.catchClause = CatchClause;
-  TryCatchStatement.loc = Maybe(SourceSpan);
-
-  TryFinallyStatement.type = "TryFinallyStatement";
-  TryFinallyStatement.body = Block;
-  TryFinallyStatement.catchClause = Maybe(CatchClause);
-  TryFinallyStatement.finalizer = Block;
-  TryFinallyStatement.loc = Maybe(SourceSpan);
-
-  VariableDeclarationStatement.type = "VariableDeclarationStatement";
-  VariableDeclarationStatement.declaration = VariableDeclaration;
-  VariableDeclarationStatement.loc = Maybe(SourceSpan);
-
-  WhileStatement.type = "WhileStatement";
-  WhileStatement.body = Statement;
-  WhileStatement.test = Expression;
-  WhileStatement.loc = Maybe(SourceSpan);
-
-  WithStatement.type = "WithStatement";
-  WithStatement.object = Expression;
-  WithStatement.body = Statement;
-  WithStatement.loc = Maybe(SourceSpan);
-
-  Block.type = "Block";
-  Block.statements = List(Statement);
-  Block.loc = Maybe(SourceSpan);
-
-  CatchClause.type = "CatchClause";
-  CatchClause.binding = Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  CatchClause.body = Block;
-  CatchClause.loc = Maybe(SourceSpan);
-
-  Directive.type = "Directive";
-  Directive.rawValue = STRING;
-  Directive.loc = Maybe(SourceSpan);
-
-  FormalParameters.items = List(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault));
-  FormalParameters.rest = Maybe(BindingIdentifier);
-
-  FunctionBody.type = "FunctionBody";
-  FunctionBody.directives = List(Directive);
-  FunctionBody.statements = List(Statement);
-  FunctionBody.loc = Maybe(SourceSpan);
-
-  FunctionDeclaration.type = "FunctionDeclaration";
-  FunctionDeclaration.isGenerator = BOOLEAN;
-  FunctionDeclaration.name = BindingIdentifier;
-  FunctionDeclaration.params = FormalParameters;
-  FunctionDeclaration.body = FunctionBody;
-  FunctionDeclaration.loc = Maybe(SourceSpan);
-
-  Script.type = "Script";
-  Script.body = FunctionBody;
-  Script.loc = Maybe(SourceSpan);
-
-  SpreadElement.type = "SpreadElement";
-  SpreadElement.expression = Expression;
-  SpreadElement.loc = Maybe(SourceSpan);
-
-  Super.type = "Super";
-  Super.loc = Maybe(SourceSpan);
-
-  SwitchCase.type = "SwitchCase";
-  SwitchCase.test = Expression;
-  SwitchCase.consequent = List(Statement);
-  SwitchCase.loc = Maybe(SourceSpan);
-
-  SwitchDefault.type = "SwitchDefault";
-  SwitchDefault.consequent = List(Statement);
-  SwitchDefault.loc = Maybe(SourceSpan);
-
-  TemplateElement.type = "TemplateElement";
-  TemplateElement.rawValue = STRING;
-  TemplateElement.loc = Maybe(SourceSpan);
-
-  VariableDeclaration.type = "VariableDeclaration";
-  VariableDeclaration.kind = VariableDeclarationKind;
-  VariableDeclaration.declarators = List(VariableDeclarator);
-  VariableDeclaration.loc = Maybe(SourceSpan);
-
-  VariableDeclarator.type = "VariableDeclarator";
-  VariableDeclarator.binding = Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression);
-  VariableDeclarator.init = Maybe(Expression);
-  VariableDeclarator.loc = Maybe(SourceSpan);
+  var Statement = Union(IterationStatement, ClassDeclaration, BlockStatement, BreakStatement, ContinueStatement, DebuggerStatement, EmptyStatement, ExpressionStatement, IfStatement, LabeledStatement, ReturnStatement, SwitchStatement, SwitchStatementWithDefault, ThrowStatement, TryCatchStatement, TryFinallyStatement, VariableDeclarationStatement, WithStatement, FunctionDeclaration);
+  var Node = Union(Statement, Expression, PropertyName, ObjectProperty, ImportDeclaration, ExportDeclaration, BindingWithDefault, BindingIdentifier, ArrayBinding, ObjectBinding, BindingProperty, ClassElement, Module, ImportSpecifier, ExportSpecifier, Block, CatchClause, Directive, FormalParameters, FunctionBody, Script, SpreadElement, Super, SwitchCase, SwitchDefault, TemplateElement, VariableDeclaration, VariableDeclarator);
+  var Function = Union(FunctionExpression, FunctionDeclaration);
+
+  SourceLocation.typeName = "SourceLocation";
+  SourceLocation.fields = [
+    { name: "line", type: DOUBLE },
+    { name: "column", type: DOUBLE },
+    { name: "offset", type: DOUBLE },
+  ];
+
+  SourceSpan.typeName = "SourceSpan";
+  SourceSpan.fields = [
+    { name: "source", type: Maybe(STRING) },
+    { name: "start", type: SourceLocation },
+    { name: "end", type: SourceLocation },
+  ];
+
+  BindingWithDefault.typeName = "BindingWithDefault";
+  BindingWithDefault.fields = [
+    { name: "type", value: "BindingWithDefault" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "init", type: Expression },
+  ];
+
+  BindingIdentifier.typeName = "BindingIdentifier";
+  BindingIdentifier.fields = [
+    { name: "type", value: "BindingIdentifier" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: STRING },
+  ];
+
+  ArrayBinding.typeName = "ArrayBinding";
+  ArrayBinding.fields = [
+    { name: "type", value: "ArrayBinding" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "elements", type: List(Maybe(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault))) },
+    { name: "restElement", type: Maybe(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression)) },
+  ];
+
+  ObjectBinding.typeName = "ObjectBinding";
+  ObjectBinding.fields = [
+    { name: "type", value: "ObjectBinding" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "properties", type: List(BindingProperty) },
+  ];
+
+  BindingPropertyIdentifier.typeName = "BindingPropertyIdentifier";
+  BindingPropertyIdentifier.fields = [
+    { name: "type", value: "BindingPropertyIdentifier" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "binding", type: BindingIdentifier },
+    { name: "init", type: Maybe(Expression) },
+  ];
+
+  BindingPropertyProperty.typeName = "BindingPropertyProperty";
+  BindingPropertyProperty.fields = [
+    { name: "type", value: "BindingPropertyProperty" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: PropertyName },
+    { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault) },
+  ];
+
+  ClassExpression.typeName = "ClassExpression";
+  ClassExpression.fields = [
+    { name: "type", value: "ClassExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: Maybe(BindingIdentifier) },
+    { name: "super", type: Maybe(Expression) },
+    { name: "elements", type: List(ClassElement) },
+  ];
+
+  ClassDeclaration.typeName = "ClassDeclaration";
+  ClassDeclaration.fields = [
+    { name: "type", value: "ClassDeclaration" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: BindingIdentifier },
+    { name: "super", type: Maybe(Expression) },
+    { name: "elements", type: List(ClassElement) },
+  ];
+
+  ClassElement.typeName = "ClassElement";
+  ClassElement.fields = [
+    { name: "type", value: "ClassElement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "isStatic", type: BOOLEAN },
+    { name: "method", type: MethodDefinition },
+  ];
+
+  Module.typeName = "Module";
+  Module.fields = [
+    { name: "type", value: "Module" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "items", type: List(Union(ImportDeclaration, ExportDeclaration, Statement)) },
+  ];
+
+  Import.typeName = "Import";
+  Import.fields = [
+    { name: "type", value: "Import" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "moduleSpecifier", type: STRING },
+    { name: "defaultBinding", type: Maybe(BindingIdentifier) },
+    { name: "namedImports", type: List(ImportSpecifier) },
+  ];
+
+  ImportNamespace.typeName = "ImportNamespace";
+  ImportNamespace.fields = [
+    { name: "type", value: "ImportNamespace" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "moduleSpecifier", type: STRING },
+    { name: "defaultBinding", type: Maybe(BindingIdentifier) },
+    { name: "namespaceBinding", type: BindingIdentifier },
+  ];
+
+  ImportSpecifier.typeName = "ImportSpecifier";
+  ImportSpecifier.fields = [
+    { name: "type", value: "ImportSpecifier" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: Maybe(STRING) },
+    { name: "binding", type: BindingIdentifier },
+  ];
+
+  ExportAllFrom.typeName = "ExportAllFrom";
+  ExportAllFrom.fields = [
+    { name: "type", value: "ExportAllFrom" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "moduleSpecifier", type: STRING },
+  ];
+
+  ExportFrom.typeName = "ExportFrom";
+  ExportFrom.fields = [
+    { name: "type", value: "ExportFrom" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "namedExports", type: List(ExportSpecifier) },
+    { name: "moduleSpecifier", type: Maybe(STRING) },
+  ];
+
+  Export.typeName = "Export";
+  Export.fields = [
+    { name: "type", value: "Export" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "declaration", type: Union(FunctionDeclaration, ClassDeclaration, VariableDeclaration) },
+  ];
+
+  ExportDefault.typeName = "ExportDefault";
+  ExportDefault.fields = [
+    { name: "type", value: "ExportDefault" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "body", type: Union(FunctionDeclaration, ClassDeclaration, Expression) },
+  ];
+
+  ExportSpecifier.typeName = "ExportSpecifier";
+  ExportSpecifier.fields = [
+    { name: "type", value: "ExportSpecifier" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: Maybe(STRING) },
+    { name: "exportedName", type: STRING },
+  ];
+
+  Method.typeName = "Method";
+  Method.fields = [
+    { name: "type", value: "Method" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: PropertyName },
+    { name: "isGenerator", type: BOOLEAN },
+    { name: "params", type: FormalParameters },
+    { name: "body", type: FunctionBody },
+  ];
+
+  Getter.typeName = "Getter";
+  Getter.fields = [
+    { name: "type", value: "Getter" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: PropertyName },
+    { name: "body", type: FunctionBody },
+  ];
+
+  Setter.typeName = "Setter";
+  Setter.fields = [
+    { name: "type", value: "Setter" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: PropertyName },
+    { name: "param", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "body", type: FunctionBody },
+  ];
+
+  DataProperty.typeName = "DataProperty";
+  DataProperty.fields = [
+    { name: "type", value: "DataProperty" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: PropertyName },
+    { name: "expression", type: Expression },
+  ];
+
+  ShorthandProperty.typeName = "ShorthandProperty";
+  ShorthandProperty.fields = [
+    { name: "type", value: "ShorthandProperty" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: STRING },
+  ];
+
+  ComputedPropertyName.typeName = "ComputedPropertyName";
+  ComputedPropertyName.fields = [
+    { name: "type", value: "ComputedPropertyName" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Expression },
+  ];
+
+  StaticPropertyName.typeName = "StaticPropertyName";
+  StaticPropertyName.fields = [
+    { name: "type", value: "StaticPropertyName" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "value", type: STRING },
+  ];
+
+  LiteralBooleanExpression.typeName = "LiteralBooleanExpression";
+  LiteralBooleanExpression.fields = [
+    { name: "type", value: "LiteralBooleanExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "value", type: BOOLEAN },
+  ];
+
+  LiteralInfinityExpression.typeName = "LiteralInfinityExpression";
+  LiteralInfinityExpression.fields = [
+    { name: "type", value: "LiteralInfinityExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  LiteralNullExpression.typeName = "LiteralNullExpression";
+  LiteralNullExpression.fields = [
+    { name: "type", value: "LiteralNullExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  LiteralNumericExpression.typeName = "LiteralNumericExpression";
+  LiteralNumericExpression.fields = [
+    { name: "type", value: "LiteralNumericExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "value", type: DOUBLE },
+  ];
+
+  LiteralRegExpExpression.typeName = "LiteralRegExpExpression";
+  LiteralRegExpExpression.fields = [
+    { name: "type", value: "LiteralRegExpExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "pattern", type: STRING },
+    { name: "flags", type: STRING },
+  ];
+
+  LiteralStringExpression.typeName = "LiteralStringExpression";
+  LiteralStringExpression.fields = [
+    { name: "type", value: "LiteralStringExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "value", type: STRING },
+  ];
+
+  ArrayExpression.typeName = "ArrayExpression";
+  ArrayExpression.fields = [
+    { name: "type", value: "ArrayExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "elements", type: List(Maybe(Union(SpreadElement, Expression))) },
+  ];
+
+  ArrowExpression.typeName = "ArrowExpression";
+  ArrowExpression.fields = [
+    { name: "type", value: "ArrowExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "params", type: FormalParameters },
+    { name: "body", type: Union(FunctionBody, Expression) },
+  ];
+
+  AssignmentExpression.typeName = "AssignmentExpression";
+  AssignmentExpression.fields = [
+    { name: "type", value: "AssignmentExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "operator", type: AssignmentOperator },
+    { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "expression", type: Expression },
+  ];
+
+  BinaryExpression.typeName = "BinaryExpression";
+  BinaryExpression.fields = [
+    { name: "type", value: "BinaryExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "operator", type: BinaryOperator },
+    { name: "left", type: Expression },
+    { name: "right", type: Expression },
+  ];
+
+  CallExpression.typeName = "CallExpression";
+  CallExpression.fields = [
+    { name: "type", value: "CallExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "callee", type: Union(Expression, Super) },
+    { name: "arguments", type: List(Union(SpreadElement, Expression)) },
+  ];
+
+  ComputedMemberExpression.typeName = "ComputedMemberExpression";
+  ComputedMemberExpression.fields = [
+    { name: "type", value: "ComputedMemberExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "object", type: Union(Expression, Super) },
+    { name: "expression", type: Expression },
+  ];
+
+  ConditionalExpression.typeName = "ConditionalExpression";
+  ConditionalExpression.fields = [
+    { name: "type", value: "ConditionalExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "test", type: Expression },
+    { name: "consequent", type: Expression },
+    { name: "alternate", type: Expression },
+  ];
+
+  FunctionExpression.typeName = "FunctionExpression";
+  FunctionExpression.fields = [
+    { name: "isGenerator", type: BOOLEAN },
+    { name: "type", value: "FunctionExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: Maybe(BindingIdentifier) },
+    { name: "params", type: FormalParameters },
+    { name: "body", type: FunctionBody },
+  ];
+
+  IdentifierExpression.typeName = "IdentifierExpression";
+  IdentifierExpression.fields = [
+    { name: "type", value: "IdentifierExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: STRING },
+  ];
+
+  NewExpression.typeName = "NewExpression";
+  NewExpression.fields = [
+    { name: "type", value: "NewExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "callee", type: Expression },
+    { name: "arguments", type: List(Union(SpreadElement, Expression)) },
+  ];
+
+  NewTargetExpression.typeName = "NewTargetExpression";
+  NewTargetExpression.fields = [
+    { name: "type", value: "NewTargetExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  ObjectExpression.typeName = "ObjectExpression";
+  ObjectExpression.fields = [
+    { name: "type", value: "ObjectExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "properties", type: List(ObjectProperty) },
+  ];
+
+  PostfixExpression.typeName = "PostfixExpression";
+  PostfixExpression.fields = [
+    { name: "type", value: "PostfixExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "operand", type: Expression },
+    { name: "operator", type: PostfixOperator },
+  ];
+
+  PrefixExpression.typeName = "PrefixExpression";
+  PrefixExpression.fields = [
+    { name: "type", value: "PrefixExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "operand", type: Expression },
+    { name: "operator", type: PrefixOperator },
+  ];
+
+  StaticMemberExpression.typeName = "StaticMemberExpression";
+  StaticMemberExpression.fields = [
+    { name: "type", value: "StaticMemberExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "object", type: Union(Expression, Super) },
+    { name: "property", type: STRING },
+  ];
+
+  TemplateExpression.typeName = "TemplateExpression";
+  TemplateExpression.fields = [
+    { name: "type", value: "TemplateExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "tag", type: Maybe(Expression) },
+    { name: "elements", type: List(Union(Expression, TemplateElement)) },
+  ];
+
+  ThisExpression.typeName = "ThisExpression";
+  ThisExpression.fields = [
+    { name: "type", value: "ThisExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  YieldExpression.typeName = "YieldExpression";
+  YieldExpression.fields = [
+    { name: "type", value: "YieldExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Maybe(Expression) },
+  ];
+
+  YieldGeneratorExpression.typeName = "YieldGeneratorExpression";
+  YieldGeneratorExpression.fields = [
+    { name: "type", value: "YieldGeneratorExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Expression },
+  ];
+
+  BlockStatement.typeName = "BlockStatement";
+  BlockStatement.fields = [
+    { name: "type", value: "BlockStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "block", type: Block },
+  ];
+
+  BreakStatement.typeName = "BreakStatement";
+  BreakStatement.fields = [
+    { name: "type", value: "BreakStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "label", type: Maybe(STRING) },
+  ];
+
+  ContinueStatement.typeName = "ContinueStatement";
+  ContinueStatement.fields = [
+    { name: "type", value: "ContinueStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "label", type: Maybe(STRING) },
+  ];
+
+  DebuggerStatement.typeName = "DebuggerStatement";
+  DebuggerStatement.fields = [
+    { name: "type", value: "DebuggerStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  DoWhileStatement.typeName = "DoWhileStatement";
+  DoWhileStatement.fields = [
+    { name: "type", value: "DoWhileStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "body", type: Statement },
+    { name: "test", type: Expression },
+  ];
+
+  EmptyStatement.typeName = "EmptyStatement";
+  EmptyStatement.fields = [
+    { name: "type", value: "EmptyStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  ExpressionStatement.typeName = "ExpressionStatement";
+  ExpressionStatement.fields = [
+    { name: "type", value: "ExpressionStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Expression },
+  ];
+
+  ForInStatement.typeName = "ForInStatement";
+  ForInStatement.fields = [
+    { name: "type", value: "ForInStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "left", type: Union(VariableDeclaration, ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "right", type: Expression },
+    { name: "body", type: Statement },
+  ];
+
+  ForOfStatement.typeName = "ForOfStatement";
+  ForOfStatement.fields = [
+    { name: "type", value: "ForOfStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "left", type: Union(VariableDeclaration, ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "right", type: Expression },
+    { name: "body", type: Statement },
+  ];
+
+  ForStatement.typeName = "ForStatement";
+  ForStatement.fields = [
+    { name: "type", value: "ForStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "init", type: Maybe(Union(VariableDeclaration, Expression)) },
+    { name: "test", type: Maybe(Expression) },
+    { name: "update", type: Maybe(Expression) },
+    { name: "body", type: Statement },
+  ];
+
+  IfStatement.typeName = "IfStatement";
+  IfStatement.fields = [
+    { name: "type", value: "IfStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "test", type: Expression },
+    { name: "consequent", type: Statement },
+    { name: "alternate", type: Maybe(Statement) },
+  ];
+
+  LabeledStatement.typeName = "LabeledStatement";
+  LabeledStatement.fields = [
+    { name: "type", value: "LabeledStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "label", type: STRING },
+    { name: "body", type: Statement },
+  ];
+
+  ReturnStatement.typeName = "ReturnStatement";
+  ReturnStatement.fields = [
+    { name: "type", value: "ReturnStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Maybe(Expression) },
+  ];
+
+  SwitchStatement.typeName = "SwitchStatement";
+  SwitchStatement.fields = [
+    { name: "type", value: "SwitchStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "discriminant", type: Expression },
+    { name: "cases", type: List(SwitchCase) },
+  ];
+
+  SwitchStatementWithDefault.typeName = "SwitchStatementWithDefault";
+  SwitchStatementWithDefault.fields = [
+    { name: "type", value: "SwitchStatementWithDefault" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "discriminant", type: Expression },
+    { name: "preDefaultCases", type: List(SwitchCase) },
+    { name: "defaultCase", type: SwitchDefault },
+    { name: "postDefaultCases", type: List(SwitchCase) },
+  ];
+
+  ThrowStatement.typeName = "ThrowStatement";
+  ThrowStatement.fields = [
+    { name: "type", value: "ThrowStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Expression },
+  ];
+
+  TryCatchStatement.typeName = "TryCatchStatement";
+  TryCatchStatement.fields = [
+    { name: "type", value: "TryCatchStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "body", type: Block },
+    { name: "catchClause", type: CatchClause },
+  ];
+
+  TryFinallyStatement.typeName = "TryFinallyStatement";
+  TryFinallyStatement.fields = [
+    { name: "type", value: "TryFinallyStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "body", type: Block },
+    { name: "catchClause", type: Maybe(CatchClause) },
+    { name: "finalizer", type: Block },
+  ];
+
+  VariableDeclarationStatement.typeName = "VariableDeclarationStatement";
+  VariableDeclarationStatement.fields = [
+    { name: "type", value: "VariableDeclarationStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "declaration", type: VariableDeclaration },
+  ];
+
+  WhileStatement.typeName = "WhileStatement";
+  WhileStatement.fields = [
+    { name: "type", value: "WhileStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "test", type: Expression },
+    { name: "body", type: Statement },
+  ];
+
+  WithStatement.typeName = "WithStatement";
+  WithStatement.fields = [
+    { name: "type", value: "WithStatement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "object", type: Expression },
+    { name: "body", type: Statement },
+  ];
+
+  Block.typeName = "Block";
+  Block.fields = [
+    { name: "type", value: "Block" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "statements", type: List(Statement) },
+  ];
+
+  CatchClause.typeName = "CatchClause";
+  CatchClause.fields = [
+    { name: "type", value: "CatchClause" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "body", type: Block },
+  ];
+
+  Directive.typeName = "Directive";
+  Directive.fields = [
+    { name: "type", value: "Directive" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "rawValue", type: STRING },
+  ];
+
+  FormalParameters.typeName = "FormalParameters";
+  FormalParameters.fields = [
+    { name: "type", value: "FormalParameters" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "items", type: List(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault)) },
+    { name: "rest", type: Maybe(BindingIdentifier) },
+  ];
+
+  FunctionBody.typeName = "FunctionBody";
+  FunctionBody.fields = [
+    { name: "type", value: "FunctionBody" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "directives", type: List(Directive) },
+    { name: "statements", type: List(Statement) },
+  ];
+
+  FunctionDeclaration.typeName = "FunctionDeclaration";
+  FunctionDeclaration.fields = [
+    { name: "isGenerator", type: BOOLEAN },
+    { name: "type", value: "FunctionDeclaration" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "name", type: BindingIdentifier },
+    { name: "params", type: FormalParameters },
+    { name: "body", type: FunctionBody },
+  ];
+
+  Script.typeName = "Script";
+  Script.fields = [
+    { name: "type", value: "Script" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "body", type: FunctionBody },
+  ];
+
+  SpreadElement.typeName = "SpreadElement";
+  SpreadElement.fields = [
+    { name: "type", value: "SpreadElement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "expression", type: Expression },
+  ];
+
+  Super.typeName = "Super";
+  Super.fields = [
+    { name: "type", value: "Super" },
+    { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  SwitchCase.typeName = "SwitchCase";
+  SwitchCase.fields = [
+    { name: "type", value: "SwitchCase" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "test", type: Expression },
+    { name: "consequent", type: List(Statement) },
+  ];
+
+  SwitchDefault.typeName = "SwitchDefault";
+  SwitchDefault.fields = [
+    { name: "type", value: "SwitchDefault" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "consequent", type: List(Statement) },
+  ];
+
+  TemplateElement.typeName = "TemplateElement";
+  TemplateElement.fields = [
+    { name: "type", value: "TemplateElement" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "rawValue", type: STRING },
+  ];
+
+  VariableDeclaration.typeName = "VariableDeclaration";
+  VariableDeclaration.fields = [
+    { name: "type", value: "VariableDeclaration" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "kind", type: VariableDeclarationKind },
+    { name: "declarators", type: List(VariableDeclarator) },
+  ];
+
+  VariableDeclarator.typeName = "VariableDeclarator";
+  VariableDeclarator.fields = [
+    { name: "type", value: "VariableDeclarator" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
+    { name: "init", type: Maybe(Expression) },
+  ];
 
   return SPEC;
 }());

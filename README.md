@@ -23,7 +23,10 @@ standard with the following extended attributes:
        associated with the interface's *identifier*.
 0. `NonEmpty`: This extended attribute may be applied to any attribute with a
    Sequence or Array type to disallow the zero-length inhabitant of that type.
-
+0. `Tail`: This extended attribute may be applied to any attribute. This extended
+   attribute is used to determine the order of the attributes as part of the
+   extension on the order of attributes. It is ignored if the implementation
+   does not need to recognize the order of the attributes.
 
 ## Status
 
@@ -88,6 +91,40 @@ describes their purpose.
   `SourceElement` class was removed, and `FunctionDeclaration` was moved to
   `Statement`.
 
+## Extension on the order of attributes
+
+In some cases, it is useful to define an ordering of attributes, for example:
+
+   * positional parameters of a constructor for the interface if the
+     implementation language only supports positional parameters
+   * enumeration of interface attributes
+
+NOTE: The authors have attempted to define the order of the attributes to follow
+      the order that the respective syntactic element appears in ECMAScript source code.
+
+Specifically, the order is defined as follows:
+
+  0. let `names` be an empty list.
+  0. append `names` with the result of AttributeList(interface, `"normal"`).
+  0. append `names` with the result of AttributeList(interface, `"tail"`).
+  0. let `reducedNames` be an empty list.
+  0. for each `name` in `names`, if `reducedNames` does not contain `name`,
+     append `name` to `reducedNames`.
+  0. return `reducedNames`.
+
+### Algorithm: AttributeList(`interface`, `category`)
+
+  0. let `list` be an empty list.
+  0. if `interface` has an heritage `super`, append `list` with the result of
+     AttributeList(`super`,`category`).
+  0. for each implements-statement in the spec in the order of as they are placed
+     in the source code of the spec, append `list` with the result of
+     AttributeList(`super`,`category`).
+  0. if `category` is `"normal"`, for each attribute `a` in `interface`, if `a` does
+     not have an extension attribute whose name is `Tail`, append `a` to `list`.
+  0. if `category` is `"tail"`, for each attribute `a` in `interface`, if `a` has
+     an extension attribute whose name is `Tail`, append `a` to `list`.
+  0. return `list`.
 
 ## License
 
