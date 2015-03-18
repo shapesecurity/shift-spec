@@ -1,6 +1,6 @@
 {
   "name": "shift-spec-idl",
-  "version": "2015.1.0",
+  "version": "2016.0.0-pre",
   "description": "Shift AST specification IDL files",
   "author": "Shape Security Labs",
   "homepage": "https://github.com/shapesecurity/shift-spec",
