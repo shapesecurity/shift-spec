@@ -64,7 +64,6 @@ interface SourceSpan {
 };
 
 interface Function {
-  attribute boolean isGenerator;
   attribute FormalParameters params;
   attribute FunctionBody body;
 };
@@ -207,9 +206,10 @@ interface ExportSpecifier : Node {
 // property definition
 
 interface Method : MethodDefinition {
-  attribute boolean isGenerator;
   attribute FormalParameters params;
 };
+
+interface GeneratorMethod : Method { };
 
 interface Getter : MethodDefinition { };
 
@@ -305,6 +305,8 @@ interface FunctionExpression : Expression {
   attribute BindingIdentifier? name;
 };
 FunctionExpression implements Function;
+
+interface GeneratorFunctionExpression : FunctionExpression { };
 
 interface IdentifierExpression : Expression {
   attribute Identifier name;
@@ -479,6 +481,8 @@ interface FunctionDeclaration : Statement {
   attribute BindingIdentifier name;
 };
 FunctionDeclaration implements Function;
+
+interface GeneratorFunctionDeclaration : FunctionDeclaration { };
 
 interface Script : Node {
   attribute Directive[] directives;
