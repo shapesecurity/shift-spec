@@ -70,7 +70,7 @@ function expandUnion(t) {
     case "union":
       return [].concat.apply([], t.ts.map(expandUnion));
     case "ref":
-      if (database["$" + t.name] && !Array.isArray(database["$" + t.name]) && typeof database["$" + t.name] !== "string") {
+      if (database["$" + t.name] && !database["$" + t.name].isInterface && typeof database["$" + t.name] !== "string") {
         return expandUnion(database["$" + t.name]);
       }
       return [t];
@@ -85,6 +85,15 @@ function expandUnion(t) {
 
 // Step 1. know all the types
 declarations.forEach(function (declaration) {
+
+  function hasTailIndicator(member) {
+    return tailNames[declaration.name] && tailNames[declaration.name].indexOf(member.member.name) >= 0;
+  }
+
+  function hasNoTailIndicator(member) {
+    return !hasTailIndicator(member);
+  }
+
   switch (declaration.type) {
     case "typedef":
       database["$" + declaration.name] = declaration.t;
@@ -93,7 +102,13 @@ declarations.forEach(function (declaration) {
       database["$" + declaration.name] = "ENUM";
       break;
     case "interface":
-      database["$" + declaration.name] = declaration.members;
+      database["$" + declaration.name] = {
+        isInterface: true,
+        parents: [],
+        tail_parents: [],
+        members: declaration.members.filter(hasNoTailIndicator),
+        tail_members: declaration.members.filter(hasTailIndicator),
+      };
       break;
   }
 });
@@ -112,28 +127,17 @@ function has(member, name) {
 }
 
 function inherits(name, parent) {
-  if (!Array.isArray(database["$" + parent])) {
+  if (!database["$" + parent].isInterface) {
     throw new Error("Inheriting non-interface");
   }
   notFinal["$" + parent] = notFinal["$" + parent] || [];
   notFinal["$" + parent].push(name);
 
-  function hasTailIndicator(name) {
-    return function (member) {
-      return tailNames[name] && tailNames[name].indexOf(member.member.name) >= 0;
-    };
-  }
+  [].push.apply(database["$" + name].parents, database["$" + parent].parents);
+  [].push.apply(database["$" + name].parents, database["$" + parent].members);
 
-  function hasNoTailIndicator(name) {
-    var ti = hasTailIndicator(name);
-    return function (member) {
-      return !ti(member);
-    };
-  }
-
-  var tail = database["$" + parent].filter(hasTailIndicator(parent)).concat(database["$" + name].filter(hasTailIndicator(name)));
-
-  database["$" + name] = database["$" + parent].filter(hasNoTailIndicator(parent)).concat(database["$" + name].filter(hasNoTailIndicator(name))).concat(tail);
+  [].push.apply(database["$" + name].tail_parents, database["$" + parent].tail_parents);
+  [].push.apply(database["$" + name].tail_parents, database["$" + parent].tail_members);
 }
 // Step 2. process inheritance
 declarations.forEach(function (declaration) {
@@ -250,7 +254,9 @@ declarations.reverse();
 declarations.forEach(function (declaration) {
   switch (declaration.type) {
     case "interface":
-      content += renderInterface(declaration.name, database["$" + declaration.name]);
+      var def = database["$" + declaration.name];
+      content += renderInterface(declaration.name,
+        def.parents.concat(def.members).concat(def.tail_parents).concat(def.tail_members));
       break;
   }
 });

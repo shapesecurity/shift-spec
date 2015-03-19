@@ -473,9 +473,9 @@ exports.default = (function() {
 
   FunctionExpression.typeName = "FunctionExpression";
   FunctionExpression.fields = [
-    { name: "isGenerator", type: BOOLEAN },
     { name: "type", value: "FunctionExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
+    { name: "isGenerator", type: BOOLEAN },
     { name: "name", type: Maybe(BindingIdentifier) },
     { name: "params", type: FormalParameters },
     { name: "body", type: FunctionBody },
@@ -766,9 +766,9 @@ exports.default = (function() {
 
   FunctionDeclaration.typeName = "FunctionDeclaration";
   FunctionDeclaration.fields = [
-    { name: "isGenerator", type: BOOLEAN },
     { name: "type", value: "FunctionDeclaration" },
     { name: "loc", type: Maybe(SourceSpan) },
+    { name: "isGenerator", type: BOOLEAN },
     { name: "name", type: BindingIdentifier },
     { name: "params", type: FormalParameters },
     { name: "body", type: FunctionBody },
