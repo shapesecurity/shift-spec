@@ -63,6 +63,11 @@ interface SourceSpan {
   attribute SourceLocation end;
 };
 
+interface Function {
+  attribute boolean isGenerator;
+  attribute FormalParameters params;
+  attribute FunctionBody body;
+};
 
 // node classes
 
@@ -72,7 +77,7 @@ interface Node {
 };
 
 interface Statement : Node { };
-interface IterationStatement : Node {
+interface IterationStatement : Statement {
   attribute Statement body;
 };
 
@@ -294,11 +299,9 @@ interface ConditionalExpression : Expression {
 };
 
 interface FunctionExpression : Expression {
-  attribute boolean isGenerator;
   attribute BindingIdentifier? name;
-  attribute FormalParameters params;
-  attribute FunctionBody body;
 };
+FunctionExpression implements Function;
 
 interface IdentifierExpression : Expression {
   attribute Identifier name;
@@ -456,7 +459,7 @@ interface Directive : Node {
   attribute string rawValue;
 };
 
-interface FormalParameters {
+interface FormalParameters : Node {
   attribute (Binding or BindingWithDefault)[] items;
   attribute BindingIdentifier? rest;
 };
@@ -467,11 +470,9 @@ interface FunctionBody : Node {
 };
 
 interface FunctionDeclaration : Statement {
-  attribute boolean isGenerator;
   attribute BindingIdentifier name;
-  attribute FormalParameters params;
-  attribute FunctionBody body;
 };
+FunctionDeclaration implements Function;
 
 interface Script : Node {
   attribute FunctionBody body;
