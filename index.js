@@ -23,13 +23,15 @@ exports.default = (function() {
   var BOOLEAN = { typeName: "Boolean" };
   var DOUBLE = { typeName: "Number" };
   var STRING = { typeName: "String" };
-
   function Maybe(arg) { return { typeName: "Maybe", argument: arg }; }
-
   function List(arg) { return { typeName: "List", argument: arg }; }
-
+  function Const(arg) { return { typeName: "Const", argument: arg }; }
   function Union() { return { typeName: "Union", arguments: [].slice.call(arguments, 0) }; }
 
+  var TYPE_INDICATOR = {
+    typeName: "Enum",
+    values: ["ArrayBinding", "ArrayExpression", "ArrowExpression", "AssignmentExpression", "BinaryExpression", "BindingIdentifier", "BindingProperty", "BindingPropertyIdentifier", "BindingPropertyProperty", "BindingWithDefault", "Block", "BlockStatement", "BreakStatement", "CallExpression", "CatchClause", "Class", "ClassDeclaration", "ClassElement", "ClassExpression", "ComputedMemberExpression", "ComputedPropertyName", "ConditionalExpression", "ContinueStatement", "DataProperty", "DebuggerStatement", "Directive", "DoWhileStatement", "EmptyStatement", "Export", "ExportAllFrom", "ExportDeclaration", "ExportDefault", "ExportFrom", "ExportSpecifier", "Expression", "ExpressionStatement", "ForInStatement", "ForOfStatement", "ForStatement", "FormalParameters", "Function", "FunctionBody", "FunctionDeclaration", "FunctionExpression", "Getter", "IdentifierExpression", "IfStatement", "Import", "ImportDeclaration", "ImportNamespace", "ImportSpecifier", "IterationStatement", "LabeledStatement", "LiteralBooleanExpression", "LiteralInfinityExpression", "LiteralNullExpression", "LiteralNumericExpression", "LiteralRegExpExpression", "LiteralStringExpression", "MemberExpression", "Method", "MethodDefinition", "Module", "NamedObjectProperty", "NewExpression", "NewTargetExpression", "Node", "ObjectBinding", "ObjectExpression", "ObjectProperty", "PostfixExpression", "PrefixExpression", "PropertyName", "ReturnStatement", "Script", "Setter", "ShorthandProperty", "SourceLocation", "SourceSpan", "SpreadElement", "Statement", "StaticMemberExpression", "StaticPropertyName", "Super", "SwitchCase", "SwitchDefault", "SwitchStatement", "SwitchStatementWithDefault", "TemplateElement", "TemplateExpression", "ThisExpression", "ThrowStatement", "TryCatchStatement", "TryFinallyStatement", "UnaryExpression", "VariableDeclaration", "VariableDeclarationStatement", "VariableDeclarator", "WhileStatement", "WithStatement", "YieldExpression", "YieldGeneratorExpression"]
+  };
 
   var VariableDeclarationKind = {
     typeName: "Enum",
@@ -176,7 +178,7 @@ exports.default = (function() {
 
   BindingWithDefault.typeName = "BindingWithDefault";
   BindingWithDefault.fields = [
-    { name: "type", value: "BindingWithDefault" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BindingWithDefault" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
     { name: "init", type: Expression },
@@ -184,14 +186,14 @@ exports.default = (function() {
 
   BindingIdentifier.typeName = "BindingIdentifier";
   BindingIdentifier.fields = [
-    { name: "type", value: "BindingIdentifier" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BindingIdentifier" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: STRING },
   ];
 
   ArrayBinding.typeName = "ArrayBinding";
   ArrayBinding.fields = [
-    { name: "type", value: "ArrayBinding" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ArrayBinding" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "elements", type: List(Maybe(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault))) },
     { name: "restElement", type: Maybe(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression)) },
@@ -199,14 +201,14 @@ exports.default = (function() {
 
   ObjectBinding.typeName = "ObjectBinding";
   ObjectBinding.fields = [
-    { name: "type", value: "ObjectBinding" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ObjectBinding" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "properties", type: List(BindingProperty) },
   ];
 
   BindingPropertyIdentifier.typeName = "BindingPropertyIdentifier";
   BindingPropertyIdentifier.fields = [
-    { name: "type", value: "BindingPropertyIdentifier" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BindingPropertyIdentifier" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "binding", type: BindingIdentifier },
     { name: "init", type: Maybe(Expression) },
@@ -214,7 +216,7 @@ exports.default = (function() {
 
   BindingPropertyProperty.typeName = "BindingPropertyProperty";
   BindingPropertyProperty.fields = [
-    { name: "type", value: "BindingPropertyProperty" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BindingPropertyProperty" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: PropertyName },
     { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault) },
@@ -222,7 +224,7 @@ exports.default = (function() {
 
   ClassExpression.typeName = "ClassExpression";
   ClassExpression.fields = [
-    { name: "type", value: "ClassExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ClassExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: Maybe(BindingIdentifier) },
     { name: "super", type: Maybe(Expression) },
@@ -231,7 +233,7 @@ exports.default = (function() {
 
   ClassDeclaration.typeName = "ClassDeclaration";
   ClassDeclaration.fields = [
-    { name: "type", value: "ClassDeclaration" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ClassDeclaration" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: BindingIdentifier },
     { name: "super", type: Maybe(Expression) },
@@ -240,7 +242,7 @@ exports.default = (function() {
 
   ClassElement.typeName = "ClassElement";
   ClassElement.fields = [
-    { name: "type", value: "ClassElement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ClassElement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "isStatic", type: BOOLEAN },
     { name: "method", type: MethodDefinition },
@@ -248,14 +250,14 @@ exports.default = (function() {
 
   Module.typeName = "Module";
   Module.fields = [
-    { name: "type", value: "Module" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Module" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "items", type: List(Union(ImportDeclaration, ExportDeclaration, Statement)) },
   ];
 
   Import.typeName = "Import";
   Import.fields = [
-    { name: "type", value: "Import" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Import" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "moduleSpecifier", type: STRING },
     { name: "defaultBinding", type: Maybe(BindingIdentifier) },
@@ -264,7 +266,7 @@ exports.default = (function() {
 
   ImportNamespace.typeName = "ImportNamespace";
   ImportNamespace.fields = [
-    { name: "type", value: "ImportNamespace" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ImportNamespace" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "moduleSpecifier", type: STRING },
     { name: "defaultBinding", type: Maybe(BindingIdentifier) },
@@ -273,7 +275,7 @@ exports.default = (function() {
 
   ImportSpecifier.typeName = "ImportSpecifier";
   ImportSpecifier.fields = [
-    { name: "type", value: "ImportSpecifier" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ImportSpecifier" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: Maybe(STRING) },
     { name: "binding", type: BindingIdentifier },
@@ -281,14 +283,14 @@ exports.default = (function() {
 
   ExportAllFrom.typeName = "ExportAllFrom";
   ExportAllFrom.fields = [
-    { name: "type", value: "ExportAllFrom" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ExportAllFrom" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "moduleSpecifier", type: STRING },
   ];
 
   ExportFrom.typeName = "ExportFrom";
   ExportFrom.fields = [
-    { name: "type", value: "ExportFrom" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ExportFrom" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "namedExports", type: List(ExportSpecifier) },
     { name: "moduleSpecifier", type: Maybe(STRING) },
@@ -296,21 +298,21 @@ exports.default = (function() {
 
   Export.typeName = "Export";
   Export.fields = [
-    { name: "type", value: "Export" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Export" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "declaration", type: Union(FunctionDeclaration, ClassDeclaration, VariableDeclaration) },
   ];
 
   ExportDefault.typeName = "ExportDefault";
   ExportDefault.fields = [
-    { name: "type", value: "ExportDefault" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ExportDefault" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "body", type: Union(FunctionDeclaration, ClassDeclaration, Expression) },
   ];
 
   ExportSpecifier.typeName = "ExportSpecifier";
   ExportSpecifier.fields = [
-    { name: "type", value: "ExportSpecifier" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ExportSpecifier" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: Maybe(STRING) },
     { name: "exportedName", type: STRING },
@@ -318,7 +320,7 @@ exports.default = (function() {
 
   Method.typeName = "Method";
   Method.fields = [
-    { name: "type", value: "Method" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Method" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: PropertyName },
     { name: "isGenerator", type: BOOLEAN },
@@ -328,7 +330,7 @@ exports.default = (function() {
 
   Getter.typeName = "Getter";
   Getter.fields = [
-    { name: "type", value: "Getter" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Getter" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: PropertyName },
     { name: "body", type: FunctionBody },
@@ -336,7 +338,7 @@ exports.default = (function() {
 
   Setter.typeName = "Setter";
   Setter.fields = [
-    { name: "type", value: "Setter" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Setter" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: PropertyName },
     { name: "param", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
@@ -345,7 +347,7 @@ exports.default = (function() {
 
   DataProperty.typeName = "DataProperty";
   DataProperty.fields = [
-    { name: "type", value: "DataProperty" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "DataProperty" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: PropertyName },
     { name: "expression", type: Expression },
@@ -353,54 +355,54 @@ exports.default = (function() {
 
   ShorthandProperty.typeName = "ShorthandProperty";
   ShorthandProperty.fields = [
-    { name: "type", value: "ShorthandProperty" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ShorthandProperty" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: STRING },
   ];
 
   ComputedPropertyName.typeName = "ComputedPropertyName";
   ComputedPropertyName.fields = [
-    { name: "type", value: "ComputedPropertyName" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ComputedPropertyName" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Expression },
   ];
 
   StaticPropertyName.typeName = "StaticPropertyName";
   StaticPropertyName.fields = [
-    { name: "type", value: "StaticPropertyName" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "StaticPropertyName" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "value", type: STRING },
   ];
 
   LiteralBooleanExpression.typeName = "LiteralBooleanExpression";
   LiteralBooleanExpression.fields = [
-    { name: "type", value: "LiteralBooleanExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LiteralBooleanExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "value", type: BOOLEAN },
   ];
 
   LiteralInfinityExpression.typeName = "LiteralInfinityExpression";
   LiteralInfinityExpression.fields = [
-    { name: "type", value: "LiteralInfinityExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LiteralInfinityExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   LiteralNullExpression.typeName = "LiteralNullExpression";
   LiteralNullExpression.fields = [
-    { name: "type", value: "LiteralNullExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LiteralNullExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   LiteralNumericExpression.typeName = "LiteralNumericExpression";
   LiteralNumericExpression.fields = [
-    { name: "type", value: "LiteralNumericExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LiteralNumericExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "value", type: DOUBLE },
   ];
 
   LiteralRegExpExpression.typeName = "LiteralRegExpExpression";
   LiteralRegExpExpression.fields = [
-    { name: "type", value: "LiteralRegExpExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LiteralRegExpExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "pattern", type: STRING },
     { name: "flags", type: STRING },
@@ -408,21 +410,21 @@ exports.default = (function() {
 
   LiteralStringExpression.typeName = "LiteralStringExpression";
   LiteralStringExpression.fields = [
-    { name: "type", value: "LiteralStringExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LiteralStringExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "value", type: STRING },
   ];
 
   ArrayExpression.typeName = "ArrayExpression";
   ArrayExpression.fields = [
-    { name: "type", value: "ArrayExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ArrayExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "elements", type: List(Maybe(Union(SpreadElement, Expression))) },
   ];
 
   ArrowExpression.typeName = "ArrowExpression";
   ArrowExpression.fields = [
-    { name: "type", value: "ArrowExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ArrowExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "params", type: FormalParameters },
     { name: "body", type: Union(FunctionBody, Expression) },
@@ -430,7 +432,7 @@ exports.default = (function() {
 
   AssignmentExpression.typeName = "AssignmentExpression";
   AssignmentExpression.fields = [
-    { name: "type", value: "AssignmentExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "AssignmentExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "operator", type: AssignmentOperator },
     { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
@@ -439,7 +441,7 @@ exports.default = (function() {
 
   BinaryExpression.typeName = "BinaryExpression";
   BinaryExpression.fields = [
-    { name: "type", value: "BinaryExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BinaryExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "operator", type: BinaryOperator },
     { name: "left", type: Expression },
@@ -448,7 +450,7 @@ exports.default = (function() {
 
   CallExpression.typeName = "CallExpression";
   CallExpression.fields = [
-    { name: "type", value: "CallExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "CallExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "callee", type: Union(Expression, Super) },
     { name: "arguments", type: List(Union(SpreadElement, Expression)) },
@@ -456,7 +458,7 @@ exports.default = (function() {
 
   ComputedMemberExpression.typeName = "ComputedMemberExpression";
   ComputedMemberExpression.fields = [
-    { name: "type", value: "ComputedMemberExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ComputedMemberExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "object", type: Union(Expression, Super) },
     { name: "expression", type: Expression },
@@ -464,7 +466,7 @@ exports.default = (function() {
 
   ConditionalExpression.typeName = "ConditionalExpression";
   ConditionalExpression.fields = [
-    { name: "type", value: "ConditionalExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ConditionalExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "test", type: Expression },
     { name: "consequent", type: Expression },
@@ -473,7 +475,7 @@ exports.default = (function() {
 
   FunctionExpression.typeName = "FunctionExpression";
   FunctionExpression.fields = [
-    { name: "type", value: "FunctionExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "FunctionExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "isGenerator", type: BOOLEAN },
     { name: "name", type: Maybe(BindingIdentifier) },
@@ -483,14 +485,14 @@ exports.default = (function() {
 
   IdentifierExpression.typeName = "IdentifierExpression";
   IdentifierExpression.fields = [
-    { name: "type", value: "IdentifierExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "IdentifierExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "name", type: STRING },
   ];
 
   NewExpression.typeName = "NewExpression";
   NewExpression.fields = [
-    { name: "type", value: "NewExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "NewExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "callee", type: Expression },
     { name: "arguments", type: List(Union(SpreadElement, Expression)) },
@@ -498,20 +500,20 @@ exports.default = (function() {
 
   NewTargetExpression.typeName = "NewTargetExpression";
   NewTargetExpression.fields = [
-    { name: "type", value: "NewTargetExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "NewTargetExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   ObjectExpression.typeName = "ObjectExpression";
   ObjectExpression.fields = [
-    { name: "type", value: "ObjectExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ObjectExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "properties", type: List(ObjectProperty) },
   ];
 
   PostfixExpression.typeName = "PostfixExpression";
   PostfixExpression.fields = [
-    { name: "type", value: "PostfixExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "PostfixExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "operand", type: Expression },
     { name: "operator", type: PostfixOperator },
@@ -519,7 +521,7 @@ exports.default = (function() {
 
   PrefixExpression.typeName = "PrefixExpression";
   PrefixExpression.fields = [
-    { name: "type", value: "PrefixExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "PrefixExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "operand", type: Expression },
     { name: "operator", type: PrefixOperator },
@@ -527,7 +529,7 @@ exports.default = (function() {
 
   StaticMemberExpression.typeName = "StaticMemberExpression";
   StaticMemberExpression.fields = [
-    { name: "type", value: "StaticMemberExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "StaticMemberExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "object", type: Union(Expression, Super) },
     { name: "property", type: STRING },
@@ -535,7 +537,7 @@ exports.default = (function() {
 
   TemplateExpression.typeName = "TemplateExpression";
   TemplateExpression.fields = [
-    { name: "type", value: "TemplateExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "TemplateExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "tag", type: Maybe(Expression) },
     { name: "elements", type: List(Union(Expression, TemplateElement)) },
@@ -543,54 +545,54 @@ exports.default = (function() {
 
   ThisExpression.typeName = "ThisExpression";
   ThisExpression.fields = [
-    { name: "type", value: "ThisExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ThisExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   YieldExpression.typeName = "YieldExpression";
   YieldExpression.fields = [
-    { name: "type", value: "YieldExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "YieldExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Maybe(Expression) },
   ];
 
   YieldGeneratorExpression.typeName = "YieldGeneratorExpression";
   YieldGeneratorExpression.fields = [
-    { name: "type", value: "YieldGeneratorExpression" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "YieldGeneratorExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Expression },
   ];
 
   BlockStatement.typeName = "BlockStatement";
   BlockStatement.fields = [
-    { name: "type", value: "BlockStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BlockStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "block", type: Block },
   ];
 
   BreakStatement.typeName = "BreakStatement";
   BreakStatement.fields = [
-    { name: "type", value: "BreakStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "BreakStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "label", type: Maybe(STRING) },
   ];
 
   ContinueStatement.typeName = "ContinueStatement";
   ContinueStatement.fields = [
-    { name: "type", value: "ContinueStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ContinueStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "label", type: Maybe(STRING) },
   ];
 
   DebuggerStatement.typeName = "DebuggerStatement";
   DebuggerStatement.fields = [
-    { name: "type", value: "DebuggerStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "DebuggerStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   DoWhileStatement.typeName = "DoWhileStatement";
   DoWhileStatement.fields = [
-    { name: "type", value: "DoWhileStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "DoWhileStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "body", type: Statement },
     { name: "test", type: Expression },
@@ -598,20 +600,20 @@ exports.default = (function() {
 
   EmptyStatement.typeName = "EmptyStatement";
   EmptyStatement.fields = [
-    { name: "type", value: "EmptyStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "EmptyStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   ExpressionStatement.typeName = "ExpressionStatement";
   ExpressionStatement.fields = [
-    { name: "type", value: "ExpressionStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ExpressionStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Expression },
   ];
 
   ForInStatement.typeName = "ForInStatement";
   ForInStatement.fields = [
-    { name: "type", value: "ForInStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ForInStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "left", type: Union(VariableDeclaration, ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
     { name: "right", type: Expression },
@@ -620,7 +622,7 @@ exports.default = (function() {
 
   ForOfStatement.typeName = "ForOfStatement";
   ForOfStatement.fields = [
-    { name: "type", value: "ForOfStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ForOfStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "left", type: Union(VariableDeclaration, ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
     { name: "right", type: Expression },
@@ -629,7 +631,7 @@ exports.default = (function() {
 
   ForStatement.typeName = "ForStatement";
   ForStatement.fields = [
-    { name: "type", value: "ForStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ForStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "init", type: Maybe(Union(VariableDeclaration, Expression)) },
     { name: "test", type: Maybe(Expression) },
@@ -639,7 +641,7 @@ exports.default = (function() {
 
   IfStatement.typeName = "IfStatement";
   IfStatement.fields = [
-    { name: "type", value: "IfStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "IfStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "test", type: Expression },
     { name: "consequent", type: Statement },
@@ -648,7 +650,7 @@ exports.default = (function() {
 
   LabeledStatement.typeName = "LabeledStatement";
   LabeledStatement.fields = [
-    { name: "type", value: "LabeledStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "LabeledStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "label", type: STRING },
     { name: "body", type: Statement },
@@ -656,14 +658,14 @@ exports.default = (function() {
 
   ReturnStatement.typeName = "ReturnStatement";
   ReturnStatement.fields = [
-    { name: "type", value: "ReturnStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ReturnStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Maybe(Expression) },
   ];
 
   SwitchStatement.typeName = "SwitchStatement";
   SwitchStatement.fields = [
-    { name: "type", value: "SwitchStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "SwitchStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "discriminant", type: Expression },
     { name: "cases", type: List(SwitchCase) },
@@ -671,7 +673,7 @@ exports.default = (function() {
 
   SwitchStatementWithDefault.typeName = "SwitchStatementWithDefault";
   SwitchStatementWithDefault.fields = [
-    { name: "type", value: "SwitchStatementWithDefault" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "SwitchStatementWithDefault" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "discriminant", type: Expression },
     { name: "preDefaultCases", type: List(SwitchCase) },
@@ -681,14 +683,14 @@ exports.default = (function() {
 
   ThrowStatement.typeName = "ThrowStatement";
   ThrowStatement.fields = [
-    { name: "type", value: "ThrowStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "ThrowStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Expression },
   ];
 
   TryCatchStatement.typeName = "TryCatchStatement";
   TryCatchStatement.fields = [
-    { name: "type", value: "TryCatchStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "TryCatchStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "body", type: Block },
     { name: "catchClause", type: CatchClause },
@@ -696,7 +698,7 @@ exports.default = (function() {
 
   TryFinallyStatement.typeName = "TryFinallyStatement";
   TryFinallyStatement.fields = [
-    { name: "type", value: "TryFinallyStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "TryFinallyStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "body", type: Block },
     { name: "catchClause", type: Maybe(CatchClause) },
@@ -705,14 +707,14 @@ exports.default = (function() {
 
   VariableDeclarationStatement.typeName = "VariableDeclarationStatement";
   VariableDeclarationStatement.fields = [
-    { name: "type", value: "VariableDeclarationStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "VariableDeclarationStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "declaration", type: VariableDeclaration },
   ];
 
   WhileStatement.typeName = "WhileStatement";
   WhileStatement.fields = [
-    { name: "type", value: "WhileStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "WhileStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "test", type: Expression },
     { name: "body", type: Statement },
@@ -720,7 +722,7 @@ exports.default = (function() {
 
   WithStatement.typeName = "WithStatement";
   WithStatement.fields = [
-    { name: "type", value: "WithStatement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "WithStatement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "object", type: Expression },
     { name: "body", type: Statement },
@@ -728,14 +730,14 @@ exports.default = (function() {
 
   Block.typeName = "Block";
   Block.fields = [
-    { name: "type", value: "Block" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Block" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "statements", type: List(Statement) },
   ];
 
   CatchClause.typeName = "CatchClause";
   CatchClause.fields = [
-    { name: "type", value: "CatchClause" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "CatchClause" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
     { name: "body", type: Block },
@@ -743,14 +745,14 @@ exports.default = (function() {
 
   Directive.typeName = "Directive";
   Directive.fields = [
-    { name: "type", value: "Directive" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Directive" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "rawValue", type: STRING },
   ];
 
   FormalParameters.typeName = "FormalParameters";
   FormalParameters.fields = [
-    { name: "type", value: "FormalParameters" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "FormalParameters" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "items", type: List(Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression, BindingWithDefault)) },
     { name: "rest", type: Maybe(BindingIdentifier) },
@@ -758,7 +760,7 @@ exports.default = (function() {
 
   FunctionBody.typeName = "FunctionBody";
   FunctionBody.fields = [
-    { name: "type", value: "FunctionBody" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "FunctionBody" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "directives", type: List(Directive) },
     { name: "statements", type: List(Statement) },
@@ -766,7 +768,7 @@ exports.default = (function() {
 
   FunctionDeclaration.typeName = "FunctionDeclaration";
   FunctionDeclaration.fields = [
-    { name: "type", value: "FunctionDeclaration" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "FunctionDeclaration" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "isGenerator", type: BOOLEAN },
     { name: "name", type: BindingIdentifier },
@@ -776,27 +778,27 @@ exports.default = (function() {
 
   Script.typeName = "Script";
   Script.fields = [
-    { name: "type", value: "Script" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Script" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "body", type: FunctionBody },
   ];
 
   SpreadElement.typeName = "SpreadElement";
   SpreadElement.fields = [
-    { name: "type", value: "SpreadElement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "SpreadElement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "expression", type: Expression },
   ];
 
   Super.typeName = "Super";
   Super.fields = [
-    { name: "type", value: "Super" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "Super" },
     { name: "loc", type: Maybe(SourceSpan) },
   ];
 
   SwitchCase.typeName = "SwitchCase";
   SwitchCase.fields = [
-    { name: "type", value: "SwitchCase" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "SwitchCase" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "test", type: Expression },
     { name: "consequent", type: List(Statement) },
@@ -804,21 +806,21 @@ exports.default = (function() {
 
   SwitchDefault.typeName = "SwitchDefault";
   SwitchDefault.fields = [
-    { name: "type", value: "SwitchDefault" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "SwitchDefault" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "consequent", type: List(Statement) },
   ];
 
   TemplateElement.typeName = "TemplateElement";
   TemplateElement.fields = [
-    { name: "type", value: "TemplateElement" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "TemplateElement" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "rawValue", type: STRING },
   ];
 
   VariableDeclaration.typeName = "VariableDeclaration";
   VariableDeclaration.fields = [
-    { name: "type", value: "VariableDeclaration" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "VariableDeclaration" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "kind", type: VariableDeclarationKind },
     { name: "declarators", type: List(VariableDeclarator) },
@@ -826,7 +828,7 @@ exports.default = (function() {
 
   VariableDeclarator.typeName = "VariableDeclarator";
   VariableDeclarator.fields = [
-    { name: "type", value: "VariableDeclarator" },
+    { name: "type", type: Const(TYPE_INDICATOR), value: "VariableDeclarator" },
     { name: "loc", type: Maybe(SourceSpan) },
     { name: "binding", type: Union(ObjectBinding, ArrayBinding, BindingIdentifier, MemberExpression) },
     { name: "init", type: Maybe(Expression) },
