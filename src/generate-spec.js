@@ -22,6 +22,8 @@ var declarations = parse(specSource);
 
 var database = Object.create(null);
 
+var TYPE_INDICATOR_ENUM_NAME = "TYPE_INDICATOR";
+
 // Although the specification does not define an order for an interface's attributes,
 // this implementation orders the `fields` array of each interface by the order they
 // may appear in the concrete syntax.
@@ -180,19 +182,23 @@ exports.default = (function() {\n\
 \n\
   var BOOLEAN = { typeName: \"Boolean\" };\n\
   var DOUBLE = { typeName: \"Number\" };\n\
-  var STRING = { typeName: \"String\" };\n\n\
-  function Maybe(arg) { return { typeName: \"Maybe\", argument: arg }; }\n\n\
-  function List(arg) { return { typeName: \"List\", argument: arg }; }\n\n\
-  function Union() { return { typeName: \"Union\", arguments: [].slice.call(arguments, 0) }; }\n\n\
+  var STRING = { typeName: \"String\" };\n\
+  function Maybe(arg) { return { typeName: \"Maybe\", argument: arg }; }\n\
+  function List(arg) { return { typeName: \"List\", argument: arg }; }\n\
+  function Const(arg) { return { typeName: \"Const\", argument: arg }; }\n\
+  function Union() { return { typeName: \"Union\", arguments: [].slice.call(arguments, 0) }; }\n\
 \n";
 
 
 function renderEnum(declaration) {
   var name = declaration.name;
-  var result = ["  var " + declaration.name + " = {\n    typeName: \"Enum\",\n    values: [" + declaration.values.join(", ") + "]\n  };\n"];
-  return result.join("\n") + "\n";
+  return "  var " + declaration.name + " = {\n    typeName: \"Enum\",\n    values: [" + declaration.values.join(", ") + "]\n  };\n\n";
 }
 
+content += renderEnum({
+  name: TYPE_INDICATOR_ENUM_NAME,
+  values: declarations.filter(function(x){ return x.type === "interface"; }).map(function(x){ return "\"" + x.name + "\""; }).sort()
+});
 
 declarations.forEach(function (declaration) {
   switch (declaration.type) {
@@ -233,11 +239,10 @@ function renderInterface(name, members) {
     if (members.length > 0) {
       result.push("  " + name + ".fields = [");
       members.forEach(function (member) {
-        var isTypeIndicator = has(member, "TypeIndicator");
-        if (!isTypeIndicator) {
-          result.push("    { name: \"" + member.member.name.replace(/^_*/, "") + "\", type: " + renderType(member.member.t) + " },");
+        if (has(member, "TypeIndicator")) {
+          result.push("    { name: \"" + member.member.name.replace(/^_*/, "") + "\", type: Const(" + TYPE_INDICATOR_ENUM_NAME + "), value: \"" + name + "\" },");
         } else {
-          result.push("    { name: \"" + member.member.name.replace(/^_*/, "") + "\", value: \"" + name + "\" },");
+          result.push("    { name: \"" + member.member.name.replace(/^_*/, "") + "\", type: " + renderType(member.member.t) + " },");
         }
       });
       result.push("  ];");
