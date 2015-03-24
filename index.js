@@ -30,7 +30,7 @@ exports.default = (function() {
 
   var TYPE_INDICATOR = {
     typeName: "Enum",
-    values: ["ArrayBinding", "ArrayExpression", "ArrowExpression", "AssignmentExpression", "BinaryExpression", "BindingIdentifier", "BindingProperty", "BindingPropertyIdentifier", "BindingPropertyProperty", "BindingWithDefault", "Block", "BlockStatement", "BreakStatement", "CallExpression", "CatchClause", "Class", "ClassDeclaration", "ClassElement", "ClassExpression", "ComputedMemberExpression", "ComputedPropertyName", "ConditionalExpression", "ContinueStatement", "DataProperty", "DebuggerStatement", "Directive", "DoWhileStatement", "EmptyStatement", "Export", "ExportAllFrom", "ExportDeclaration", "ExportDefault", "ExportFrom", "ExportSpecifier", "Expression", "ExpressionStatement", "ForInStatement", "ForOfStatement", "ForStatement", "FormalParameters", "Function", "FunctionBody", "FunctionDeclaration", "FunctionExpression", "Getter", "IdentifierExpression", "IfStatement", "Import", "ImportDeclaration", "ImportNamespace", "ImportSpecifier", "IterationStatement", "LabeledStatement", "LiteralBooleanExpression", "LiteralInfinityExpression", "LiteralNullExpression", "LiteralNumericExpression", "LiteralRegExpExpression", "LiteralStringExpression", "MemberExpression", "Method", "MethodDefinition", "Module", "NamedObjectProperty", "NewExpression", "NewTargetExpression", "Node", "ObjectBinding", "ObjectExpression", "ObjectProperty", "PostfixExpression", "PrefixExpression", "PropertyName", "ReturnStatement", "Script", "Setter", "ShorthandProperty", "SourceLocation", "SourceSpan", "SpreadElement", "Statement", "StaticMemberExpression", "StaticPropertyName", "Super", "SwitchCase", "SwitchDefault", "SwitchStatement", "SwitchStatementWithDefault", "TemplateElement", "TemplateExpression", "ThisExpression", "ThrowStatement", "TryCatchStatement", "TryFinallyStatement", "UnaryExpression", "VariableDeclaration", "VariableDeclarationStatement", "VariableDeclarator", "WhileStatement", "WithStatement", "YieldExpression", "YieldGeneratorExpression"]
+    values: ["ArrayBinding", "ArrayExpression", "ArrowExpression", "AssignmentExpression", "BinaryExpression", "BindingIdentifier", "BindingProperty", "BindingPropertyIdentifier", "BindingPropertyProperty", "BindingWithDefault", "Block", "BlockStatement", "BreakStatement", "CallExpression", "CatchClause", "Class", "ClassDeclaration", "ClassElement", "ClassExpression", "ComputedMemberExpression", "ComputedPropertyName", "ConditionalExpression", "ContinueStatement", "DataProperty", "DebuggerStatement", "Directive", "DoWhileStatement", "EmptyStatement", "Export", "ExportAllFrom", "ExportDeclaration", "ExportDefault", "ExportFrom", "ExportSpecifier", "Expression", "ExpressionStatement", "ForInStatement", "ForOfStatement", "ForStatement", "FormalParameters", "Function", "FunctionBody", "FunctionDeclaration", "FunctionExpression", "Getter", "IdentifierExpression", "IfStatement", "Import", "ImportDeclaration", "ImportNamespace", "ImportSpecifier", "IterationStatement", "LabeledStatement", "LiteralBooleanExpression", "LiteralInfinityExpression", "LiteralNullExpression", "LiteralNumericExpression", "LiteralRegExpExpression", "LiteralStringExpression", "MemberExpression", "Method", "MethodDefinition", "Module", "NamedObjectProperty", "NewExpression", "NewTargetExpression", "Node", "ObjectBinding", "ObjectExpression", "ObjectProperty", "PropertyName", "ReturnStatement", "Script", "Setter", "ShorthandProperty", "SourceLocation", "SourceSpan", "SpreadElement", "Statement", "StaticMemberExpression", "StaticPropertyName", "Super", "SwitchCase", "SwitchDefault", "SwitchStatement", "SwitchStatementWithDefault", "TemplateElement", "TemplateExpression", "ThisExpression", "ThrowStatement", "TryCatchStatement", "TryFinallyStatement", "UnaryExpression", "UpdateExpression", "VariableDeclaration", "VariableDeclarationStatement", "VariableDeclarator", "WhileStatement", "WithStatement", "YieldExpression", "YieldGeneratorExpression"]
   };
 
   var VariableDeclarationKind = {
@@ -48,12 +48,12 @@ exports.default = (function() {
     values: ["==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<", ">>", ">>>", "+", "-", "*", "/", "%", ",", "||", "&&", "|", "^", "&"]
   };
 
-  var PrefixOperator = {
+  var UnaryOperator = {
     typeName: "Enum",
-    values: ["+", "-", "!", "~", "typeof", "void", "delete", "++", "--"]
+    values: ["+", "-", "!", "~", "typeof", "void", "delete"]
   };
 
-  var PostfixOperator = {
+  var UpdateOperator = {
     typeName: "Enum",
     values: ["++", "--"]
   };
@@ -103,11 +103,11 @@ exports.default = (function() {
   var NewExpression = SPEC.NewExpression = {};
   var NewTargetExpression = SPEC.NewTargetExpression = {};
   var ObjectExpression = SPEC.ObjectExpression = {};
-  var PostfixExpression = SPEC.PostfixExpression = {};
-  var PrefixExpression = SPEC.PrefixExpression = {};
+  var UnaryExpression = SPEC.UnaryExpression = {};
   var StaticMemberExpression = SPEC.StaticMemberExpression = {};
   var TemplateExpression = SPEC.TemplateExpression = {};
   var ThisExpression = SPEC.ThisExpression = {};
+  var UpdateExpression = SPEC.UpdateExpression = {};
   var YieldExpression = SPEC.YieldExpression = {};
   var YieldGeneratorExpression = SPEC.YieldGeneratorExpression = {};
   var BlockStatement = SPEC.BlockStatement = {};
@@ -155,8 +155,7 @@ exports.default = (function() {
   var ObjectProperty = Union(NamedObjectProperty, ShorthandProperty);
   var PropertyName = Union(ComputedPropertyName, StaticPropertyName);
   var MemberExpression = Union(ComputedMemberExpression, StaticMemberExpression);
-  var UnaryExpression = Union(PostfixExpression, PrefixExpression);
-  var Expression = Union(UnaryExpression, MemberExpression, ClassExpression, LiteralBooleanExpression, LiteralInfinityExpression, LiteralNullExpression, LiteralNumericExpression, LiteralRegExpExpression, LiteralStringExpression, ArrayExpression, ArrowExpression, AssignmentExpression, BinaryExpression, CallExpression, ConditionalExpression, FunctionExpression, IdentifierExpression, NewExpression, NewTargetExpression, ObjectExpression, TemplateExpression, ThisExpression, YieldExpression, YieldGeneratorExpression);
+  var Expression = Union(MemberExpression, ClassExpression, LiteralBooleanExpression, LiteralInfinityExpression, LiteralNullExpression, LiteralNumericExpression, LiteralRegExpExpression, LiteralStringExpression, ArrayExpression, ArrowExpression, AssignmentExpression, BinaryExpression, CallExpression, ConditionalExpression, FunctionExpression, IdentifierExpression, NewExpression, NewTargetExpression, ObjectExpression, UnaryExpression, TemplateExpression, ThisExpression, UpdateExpression, YieldExpression, YieldGeneratorExpression);
   var IterationStatement = Union(DoWhileStatement, ForInStatement, ForOfStatement, ForStatement, WhileStatement);
   var Statement = Union(IterationStatement, ClassDeclaration, BlockStatement, BreakStatement, ContinueStatement, DebuggerStatement, EmptyStatement, ExpressionStatement, IfStatement, LabeledStatement, ReturnStatement, SwitchStatement, SwitchStatementWithDefault, ThrowStatement, TryCatchStatement, TryFinallyStatement, VariableDeclarationStatement, WithStatement, FunctionDeclaration);
   var Node = Union(Statement, Expression, PropertyName, ObjectProperty, ImportDeclaration, ExportDeclaration, BindingWithDefault, BindingIdentifier, ArrayBinding, ObjectBinding, BindingProperty, ClassElement, Module, ImportSpecifier, ExportSpecifier, Block, CatchClause, Directive, FormalParameters, FunctionBody, Script, SpreadElement, Super, SwitchCase, SwitchDefault, TemplateElement, VariableDeclaration, VariableDeclarator);
@@ -511,20 +510,12 @@ exports.default = (function() {
     { name: "properties", type: List(ObjectProperty) },
   ];
 
-  PostfixExpression.typeName = "PostfixExpression";
-  PostfixExpression.fields = [
-    { name: "type", type: Const(TYPE_INDICATOR), value: "PostfixExpression" },
+  UnaryExpression.typeName = "UnaryExpression";
+  UnaryExpression.fields = [
+    { name: "type", type: Const(TYPE_INDICATOR), value: "UnaryExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
+    { name: "operator", type: UnaryOperator },
     { name: "operand", type: Expression },
-    { name: "operator", type: PostfixOperator },
-  ];
-
-  PrefixExpression.typeName = "PrefixExpression";
-  PrefixExpression.fields = [
-    { name: "type", type: Const(TYPE_INDICATOR), value: "PrefixExpression" },
-    { name: "loc", type: Maybe(SourceSpan) },
-    { name: "operand", type: Expression },
-    { name: "operator", type: PrefixOperator },
   ];
 
   StaticMemberExpression.typeName = "StaticMemberExpression";
@@ -547,6 +538,15 @@ exports.default = (function() {
   ThisExpression.fields = [
     { name: "type", type: Const(TYPE_INDICATOR), value: "ThisExpression" },
     { name: "loc", type: Maybe(SourceSpan) },
+  ];
+
+  UpdateExpression.typeName = "UpdateExpression";
+  UpdateExpression.fields = [
+    { name: "type", type: Const(TYPE_INDICATOR), value: "UpdateExpression" },
+    { name: "loc", type: Maybe(SourceSpan) },
+    { name: "isPrefix", type: BOOLEAN },
+    { name: "operator", type: UpdateOperator },
+    { name: "operand", type: Union(BindingIdentifier, MemberExpression) },
   ];
 
   YieldExpression.typeName = "YieldExpression";
