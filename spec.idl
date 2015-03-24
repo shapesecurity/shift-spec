@@ -48,8 +48,8 @@ enum BinaryOperator {
   "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
   ">>", ">>>", "+", "-", "*", "/", "%", ",", "||", "&&", "|", "^", "&"
 };
-enum PrefixOperator { "+", "-", "!", "~", "typeof", "void", "delete", "++", "--" };
-enum PostfixOperator { "++", "--" };
+enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
+enum UpdateOperator { "++", "--" };
 
 interface SourceLocation {
   attribute unsigned long line;
@@ -82,9 +82,6 @@ interface IterationStatement : Statement {
 };
 
 interface Expression : Node { };
-interface UnaryExpression : Expression {
-  attribute Expression operand;
-};
 interface MemberExpression : Expression {
   attribute (Expression or Super) _object;
 };
@@ -318,12 +315,9 @@ interface ObjectExpression : Expression {
   attribute ObjectProperty[] properties;
 };
 
-interface PostfixExpression : UnaryExpression {
-  attribute PostfixOperator operator;
-};
-
-interface PrefixExpression : UnaryExpression {
-  attribute PrefixOperator operator;
+interface UnaryExpression : Expression {
+  attribute UnaryOperator operator;
+  attribute Expression operand;
 };
 
 interface StaticMemberExpression : MemberExpression {
@@ -336,6 +330,12 @@ interface TemplateExpression : Expression {
 };
 
 interface ThisExpression : Expression { };
+
+interface UpdateExpression : Expression {
+  attribute boolean isPrefix;
+  attribute UpdateOperator operator;
+  attribute (BindingIdentifier or MemberExpression) operand;
+};
 
 interface YieldExpression : Expression {
   attribute Expression? expression;
