@@ -780,7 +780,8 @@ exports.default = (function() {
   Script.fields = [
     { name: "type", type: Const(TYPE_INDICATOR), value: "Script" },
     { name: "loc", type: Maybe(SourceSpan) },
-    { name: "body", type: FunctionBody },
+    { name: "directives", type: List(Directive) },
+    { name: "statements", type: List(Statement) },
   ];
 
   SpreadElement.typeName = "SpreadElement";
