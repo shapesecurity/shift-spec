@@ -475,7 +475,8 @@ interface FunctionDeclaration : Statement {
 FunctionDeclaration implements Function;
 
 interface Script : Node {
-  attribute FunctionBody body;
+  attribute Directive[] directives;
+  attribute Statement[] statements;
 };
 
 interface SpreadElement : Node {
