@@ -1,6 +1,6 @@
 {
   "name": "shift-spec",
-  "version": "2.1.1",
+  "version": "2015.0.0",
   "description": "Shift AST specification",
   "author": "Shape Security Labs",
   "homepage": "https://github.com/shapesecurity/shift-spec",
