@@ -41,8 +41,8 @@ typedef string Label;
 
 enum VariableDeclarationKind { "var", "let", "const" };
 
-enum AssignmentOperator {
-  "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
+enum CompoundAssignmentOperator {
+  "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
 };
 enum BinaryOperator {
   "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
@@ -269,7 +269,6 @@ interface ArrowExpression : Expression {
 };
 
 interface AssignmentExpression : Expression {
-  attribute AssignmentOperator operator;
   attribute Binding binding;
   attribute Expression expression;
 };
@@ -283,6 +282,12 @@ interface BinaryExpression : Expression {
 interface CallExpression : Expression {
   attribute (Expression or Super) callee;
   attribute Arguments arguments;
+};
+
+interface CompoundAssignmentExpression : Expression {
+  attribute CompoundAssignmentOperator operator;
+  attribute (BindingIdentifier or MemberExpression) binding;
+  attribute Expression expression;
 };
 
 interface ComputedMemberExpression : MemberExpression {
