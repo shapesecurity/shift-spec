@@ -28,8 +28,9 @@ standard with the following extended attributes:
 ## Status
 
 This specification currently supports ECMAScript as defined in ECMA-262 version
-6 (as of release candidate 2), which is the upcoming version of ECMA-262 at the
-time of this writing.
+6 (as of the final release candidate), which is the latest version of ECMA-262
+at the time of this writing. Stability of this data structure is not guaranteed
+between releases of ECMA-262.
 
 
 ## Implementations
@@ -63,30 +64,25 @@ describes their purpose.
 
 ## Design Decisions
 
+The following design decisions showcase characteristics of the Shift AST design
+goals.
+
 * The concepts of `Block` and `VariableDeclaration` are separate from
   `BlockStatement` and `VariableDeclarationStatement` respectively in order to
   avoid usage of those statements where other types of statements are not
   allowed.
-* The `FunctionBody` node represents a `Block` where directives are allowed.
-  Directives are not represented as `LiteralStringExpression`s to avoid
-  confusion with unnecessarily parenthesised string literals in statement
-  position.
-* `AssignmentExpression` is separate from `BinaryExpression` to prepare for
-  ES6, which will only allow valid bindings in the left operand (12.14.1). All
-  other binary expressions are grouped together.
+* `AssignmentExpression` is separate from `BinaryExpression` because ES6
+  restricts the left operand of `AssignmentExpression` to bindings (12.14.1),
+  and this restriction could be represented with a sufficiently advanced type
+  system. Similarly, `ComputedAssignmentExpression` further restricts its left
+  operand, and is consequently separated. All other binary expressions are
+  grouped together.
 * RegExps and other exotic values are not used as primitives to allow for the
   possibility of serialisation to JSON.
 
 ### Compromises
 
-* `VariableDeclarationKind` contains `let` and `const`, which should only be
-  allowed in ES6, but implementations had widespread support for these
-  declaration kinds long before they had support for any other ES6 feature.
-  Because of this, many people consider it an unofficial extension to ES5.
-* Similarly, `FunctionDeclaration`s in arbitrary `Statement` position were
-  allowed by many ES5 implementations (with varying semantics), so the
-  `SourceElement` class was removed, and `FunctionDeclaration` was moved to
-  `Statement`.
+None right now!
 
 
 ## License
