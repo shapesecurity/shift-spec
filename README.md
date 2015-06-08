@@ -41,6 +41,10 @@ own implementation to this list, please open a Pull Request. Implementations
 should be ordered by submission date within a category that appropriately
 describes their purpose.
 
+### Conform
+
+* [ECMAScript representation of this specification](https://github.com/shapesecurity/shift-spec-js)
+
 ### Create
 
 * [Shift Parser](https://github.com/shapesecurity/shift-parser-js)
