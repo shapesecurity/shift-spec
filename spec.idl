@@ -41,15 +41,15 @@ typedef string Label;
 
 enum VariableDeclarationKind { "var", "let", "const" };
 
-enum AssignmentOperator {
-  "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
+enum CompoundAssignmentOperator {
+  "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
 };
 enum BinaryOperator {
   "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
   ">>", ">>>", "+", "-", "*", "/", "%", ",", "||", "&&", "|", "^", "&"
 };
-enum PrefixOperator { "+", "-", "!", "~", "typeof", "void", "delete", "++", "--" };
-enum PostfixOperator { "++", "--" };
+enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
+enum UpdateOperator { "++", "--" };
 
 interface SourceLocation {
   attribute unsigned long line;
@@ -82,9 +82,6 @@ interface IterationStatement : Statement {
 };
 
 interface Expression : Node { };
-interface UnaryExpression : Expression {
-  attribute Expression operand;
-};
 interface MemberExpression : Expression {
   attribute (Expression or Super) _object;
 };
@@ -166,6 +163,7 @@ interface ClassElement : Node {
 // modules
 
 interface Module : Node {
+  attribute Directive[] directives;
   attribute (ImportDeclaration or ExportDeclaration or Statement)[] items;
 };
 
@@ -272,7 +270,6 @@ interface ArrowExpression : Expression {
 };
 
 interface AssignmentExpression : Expression {
-  attribute AssignmentOperator operator;
   attribute Binding binding;
   attribute Expression expression;
 };
@@ -286,6 +283,12 @@ interface BinaryExpression : Expression {
 interface CallExpression : Expression {
   attribute (Expression or Super) callee;
   attribute Arguments arguments;
+};
+
+interface CompoundAssignmentExpression : Expression {
+  attribute CompoundAssignmentOperator operator;
+  attribute (BindingIdentifier or MemberExpression) binding;
+  attribute Expression expression;
 };
 
 interface ComputedMemberExpression : MemberExpression {
@@ -318,12 +321,9 @@ interface ObjectExpression : Expression {
   attribute ObjectProperty[] properties;
 };
 
-interface PostfixExpression : UnaryExpression {
-  attribute PostfixOperator operator;
-};
-
-interface PrefixExpression : UnaryExpression {
-  attribute PrefixOperator operator;
+interface UnaryExpression : Expression {
+  attribute UnaryOperator operator;
+  attribute Expression operand;
 };
 
 interface StaticMemberExpression : MemberExpression {
@@ -336,6 +336,12 @@ interface TemplateExpression : Expression {
 };
 
 interface ThisExpression : Expression { };
+
+interface UpdateExpression : Expression {
+  attribute boolean isPrefix;
+  attribute UpdateOperator operator;
+  attribute (BindingIdentifier or MemberExpression) operand;
+};
 
 interface YieldExpression : Expression {
   attribute Expression? expression;
@@ -475,7 +481,8 @@ interface FunctionDeclaration : Statement {
 FunctionDeclaration implements Function;
 
 interface Script : Node {
-  attribute FunctionBody body;
+  attribute Directive[] directives;
+  attribute Statement[] statements;
 };
 
 interface SpreadElement : Node {
