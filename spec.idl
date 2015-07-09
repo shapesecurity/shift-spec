@@ -104,8 +104,9 @@ interface ExportDeclaration : Node { };
 
 // bindings
 
+typedef (BindingIdentifier or MemberExpression) SimpleAssignmentTarget;
 typedef (ObjectBinding or ArrayBinding) BindingPattern;
-typedef (BindingPattern or BindingIdentifier or MemberExpression) Binding;
+typedef (BindingPattern or SimpleAssignmentTarget) Binding;
 
 interface BindingWithDefault : Node {
   attribute Binding binding;
@@ -292,7 +293,7 @@ interface CallExpression : Expression {
 
 interface CompoundAssignmentExpression : Expression {
   attribute CompoundAssignmentOperator operator;
-  attribute (BindingIdentifier or MemberExpression) binding;
+  attribute SimpleAssignmentTarget binding;
   attribute Expression expression;
 };
 
@@ -345,7 +346,7 @@ interface ThisExpression : Expression { };
 interface UpdateExpression : Expression {
   attribute boolean isPrefix;
   attribute UpdateOperator operator;
-  attribute (BindingIdentifier or MemberExpression) operand;
+  attribute SimpleAssignmentTarget operand;
 };
 
 interface YieldExpression : Expression {
