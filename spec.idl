@@ -104,7 +104,8 @@ interface ExportDeclaration : Node { };
 
 // bindings
 
-typedef (ObjectBinding or ArrayBinding or BindingIdentifier or MemberExpression) Binding;
+typedef (ObjectBinding or ArrayBinding) BindingPattern;
+typedef (BindingPattern or BindingIdentifier or MemberExpression) Binding;
 
 interface BindingWithDefault : Node {
   attribute Binding binding;
@@ -457,7 +458,7 @@ interface Block : Node {
 };
 
 interface CatchClause : Node {
-  attribute Binding binding;
+  attribute (BindingPattern or BindingIdentifier) binding;
   attribute Block body;
 };
 
@@ -510,6 +511,6 @@ interface VariableDeclaration : Node {
 };
 
 interface VariableDeclarator : Node {
-  attribute Binding binding;
+  attribute (BindingPattern or BindingIdentifier) binding;
   attribute Expression? init;
 };
