@@ -251,7 +251,11 @@ interface LiteralNumericExpression : Expression {
 
 interface LiteralRegExpExpression : Expression {
   attribute string pattern;
-  attribute string flags;
+  attribute boolean global;
+  attribute boolean ignoreCase;
+  attribute boolean multiLine;
+  attribute boolean sticky;
+  attribute boolean unicode;
 };
 
 interface LiteralStringExpression : Expression {
