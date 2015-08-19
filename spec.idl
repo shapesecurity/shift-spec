@@ -76,6 +76,8 @@ interface Node {
   attribute SourceSpan? loc;
 };
 
+interface Program : Node { };
+
 interface Statement : Node { };
 interface IterationStatement : Statement {
   attribute Statement body;
@@ -169,7 +171,7 @@ interface ClassElement : Node {
 
 // modules
 
-interface Module : Node {
+interface Module : Program {
   attribute Directive[] directives;
   attribute (ImportDeclaration or ExportDeclaration or Statement)[] items;
 };
@@ -491,7 +493,7 @@ interface FunctionDeclaration : Statement {
 };
 FunctionDeclaration implements Function;
 
-interface Script : Node {
+interface Script : Program {
   attribute Directive[] directives;
   attribute Statement[] statements;
 };
