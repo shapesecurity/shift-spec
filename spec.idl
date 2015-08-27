@@ -124,7 +124,7 @@ interface BindingIdentifier : Node {
 
 interface ArrayBinding : Node {
   attribute (Binding or BindingWithDefault)?[] elements;
-  attribute Binding? restElement;
+  attribute Binding? rest;
 };
 
 interface ObjectBinding : Node {
