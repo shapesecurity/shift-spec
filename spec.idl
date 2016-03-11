@@ -51,18 +51,6 @@ enum BinaryOperator {
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
 
-interface SourceLocation {
-  attribute unsigned long line;
-  attribute unsigned long column;
-  attribute unsigned long offset;
-};
-
-interface SourceSpan {
-  attribute string? source;
-  attribute SourceLocation start;
-  attribute SourceLocation end;
-};
-
 interface Function {
   attribute boolean isGenerator;
   attribute FormalParameters params;
@@ -73,7 +61,6 @@ interface Function {
 
 interface Node {
   [TypeIndicator] readonly attribute Type type;
-  attribute SourceSpan? loc;
 };
 
 interface Statement : Node { };
