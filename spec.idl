@@ -42,11 +42,11 @@ typedef string Label;
 enum VariableDeclarationKind { "var", "let", "const" };
 
 enum CompoundAssignmentOperator {
-  "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
+  "+=", "-=", "*=", "/=", "%=", "**=", "<<=", ">>=", ">>>=", "|=", "^=", "&="
 };
 enum BinaryOperator {
   "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
-  ">>", ">>>", "+", "-", "*", "/", "%", ",", "||", "&&", "|", "^", "&"
+  ">>", ">>>", "+", "-", "*", "/", "%", "**", ",", "||", "&&", "|", "^", "&"
 };
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
