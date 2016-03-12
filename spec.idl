@@ -93,7 +93,7 @@ interface ExportDeclaration : Node { };
 
 // bindings
 
-typedef (BindingIdentifier or MemberExpression) SimpleAssignmentTarget;
+typedef (BindingIdentifier or MemberBinding) SimpleAssignmentTarget;
 typedef (ObjectBinding or ArrayBinding) BindingPattern;
 typedef (BindingPattern or SimpleAssignmentTarget) Binding;
 
@@ -109,6 +109,18 @@ interface Parameter : Node {
 
 interface BindingIdentifier : Node {
   attribute Identifier name;
+};
+
+interface MemberBinding : Node {
+  attribute (Expression or Super) _object;
+};
+
+interface ComputedMemberBinding : MemberBinding {
+  attribute Expression expression;
+};
+
+interface StaticMemberBinding : MemberBinding {
+  attribute IdentifierName property;
 };
 
 interface ArrayBinding : Node {
