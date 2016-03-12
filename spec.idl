@@ -465,7 +465,7 @@ interface Directive : Node {
 
 interface FormalParameters : Node {
   attribute Parameter[] items;
-  attribute BindingIdentifier? rest;
+  attribute (BindingPattern or BindingIdentifier)? rest;
 };
 
 interface FunctionBody : Node {
