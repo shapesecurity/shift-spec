@@ -195,8 +195,12 @@ interface ExportAllFrom : ExportDeclaration {
 };
 
 interface ExportFrom : ExportDeclaration {
-  attribute ExportSpecifier[] namedExports;
-  attribute string? moduleSpecifier;
+  attribute ExportFromSpecifier[] namedExports;
+  attribute string moduleSpecifier;
+};
+
+interface ExportLocals : ExportDeclaration {
+  attribute ExportLocalSpecifier[] namedExports;
 };
 
 interface Export : ExportDeclaration {
@@ -207,9 +211,14 @@ interface ExportDefault : ExportDeclaration {
   attribute (FunctionDeclaration or ClassDeclaration or Expression) body;
 };
 
-interface ExportSpecifier : Node {
-  attribute IdentifierName? name;
-  attribute IdentifierName exportedName;
+interface ExportFromSpecifier : Node {
+  attribute IdentifierName name;
+  attribute IdentifierName? exportedName;
+};
+
+interface ExportLocalSpecifier : Node {
+  attribute IdentifierExpression name;
+  attribute IdentifierName? exportedName;
 };
 
 // property definition
@@ -230,7 +239,7 @@ interface DataProperty : NamedObjectProperty {
 };
 
 interface ShorthandProperty : ObjectProperty {
-  attribute Identifier name;
+  attribute IdentifierExpression name;
 };
 
 interface ComputedPropertyName : PropertyName {
