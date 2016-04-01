@@ -93,9 +93,12 @@ interface ExportDeclaration : Node { };
 
 // bindings
 
-typedef (BindingIdentifier or MemberBinding) SimpleAssignmentTarget;
 typedef (ObjectBinding or ArrayBinding) BindingPattern;
-typedef (BindingPattern or SimpleAssignmentTarget) Binding;
+typedef (BindingPattern or BindingIdentifier) Binding;
+
+typedef (AssignmentTargetIdentifier or MemberAssignmentTarget) SimpleAssignmentTarget;
+typedef (ObjectAssignmentTarget or ArrayAssignmentTarget) AssignmentTargetPattern;
+typedef (AssignmentTargetPattern or SimpleAssignmentTarget) AssignmentTarget;
 
 interface BindingWithDefault : Node {
   attribute Binding binding;
@@ -103,7 +106,7 @@ interface BindingWithDefault : Node {
 };
 
 interface Parameter : Node {
-  attribute (BindingPattern or BindingIdentifier) binding;
+  attribute Binding binding;
   attribute Expression? init;
 };
 
@@ -111,15 +114,19 @@ interface BindingIdentifier : Node {
   attribute Identifier name;
 };
 
-interface MemberBinding : Node {
+interface AssignmentTargetIdentifier : Node {
+  attribute Identifier name;
+};
+
+interface MemberAssignmentTarget : Node {
   attribute (Expression or Super) _object;
 };
 
-interface ComputedMemberBinding : MemberBinding {
+interface ComputedMemberAssignmentTarget : MemberAssignmentTarget {
   attribute Expression expression;
 };
 
-interface StaticMemberBinding : MemberBinding {
+interface StaticMemberAssignmentTarget : MemberAssignmentTarget {
   attribute IdentifierName property;
 };
 
@@ -142,6 +149,32 @@ interface BindingPropertyIdentifier : BindingProperty {
 interface BindingPropertyProperty : BindingProperty {
   attribute PropertyName name;
   attribute (Binding or BindingWithDefault) binding;
+};
+
+interface AssignmentTargetWithDefault : Node {
+  attribute AssignmentTarget binding;
+  attribute Expression init;
+};
+
+interface ArrayAssignmentTarget : Node {
+  attribute (AssignmentTarget or AssignmentTargetWithDefault)?[] elements;
+  attribute AssignmentTarget? rest;
+};
+
+interface ObjectAssignmentTarget : Node {
+  attribute AssignmentTargetProperty[] properties;
+};
+
+interface AssignmentTargetProperty : Node { };
+
+interface AssignmentTargetPropertyIdentifier : AssignmentTargetProperty {
+  attribute AssignmentTargetIdentifier binding;
+  attribute Expression? init;
+};
+
+interface AssignmentTargetPropertyProperty : AssignmentTargetProperty {
+  attribute PropertyName name;
+  attribute (AssignmentTarget or AssignmentTargetWithDefault) binding;
 };
 
 
@@ -221,6 +254,7 @@ interface ExportLocalSpecifier : Node {
   attribute IdentifierName? exportedName;
 };
 
+
 // property definition
 
 interface Method : MethodDefinition {
@@ -291,7 +325,7 @@ interface ArrowExpression : Expression {
 };
 
 interface AssignmentExpression : Expression {
-  attribute Binding binding;
+  attribute AssignmentTarget binding;
   attribute Expression expression;
 };
 
@@ -400,12 +434,12 @@ interface ExpressionStatement : Statement {
 };
 
 interface ForInStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding) left;
+  attribute (VariableDeclaration or AssignmentTarget) left;
   attribute Expression right;
 };
 
 interface ForOfStatement : IterationStatement {
-  attribute (VariableDeclaration or Binding) left;
+  attribute (VariableDeclaration or AssignmentTarget) left;
   attribute Expression right;
 };
 
@@ -478,7 +512,7 @@ interface Block : Node {
 };
 
 interface CatchClause : Node {
-  attribute (BindingPattern or BindingIdentifier) binding;
+  attribute Binding binding;
   attribute Block body;
 };
 
@@ -488,7 +522,7 @@ interface Directive : Node {
 
 interface FormalParameters : Node {
   attribute Parameter[] items;
-  attribute (BindingPattern or BindingIdentifier)? rest;
+  attribute Binding? rest;
 };
 
 interface FunctionBody : Node {
@@ -531,6 +565,6 @@ interface VariableDeclaration : Node {
 };
 
 interface VariableDeclarator : Node {
-  attribute (BindingPattern or BindingIdentifier) binding;
+  attribute Binding binding;
   attribute Expression? init;
 };
