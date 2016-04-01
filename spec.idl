@@ -105,7 +105,7 @@ interface BindingWithDefault : Node {
 interface Parameter : Node {
   attribute (BindingPattern or BindingIdentifier) binding;
   attribute Expression? init;
-}
+};
 
 interface BindingIdentifier : Node {
   attribute Identifier name;
