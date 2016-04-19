@@ -12,7 +12,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
-    "spec.idl"
+    "spec.idl",
+    "attribute-order.conf"
   ],
   "keywords": [
     "Shift",
