@@ -90,6 +90,9 @@ interface ImportDeclaration : Node {
 };
 interface ExportDeclaration : Node { };
 
+interface VariableReference : Node {
+  attribute Identifier name;
+};
 
 // bindings
 
@@ -110,13 +113,9 @@ interface Parameter : Node {
   attribute Expression? init;
 };
 
-interface BindingIdentifier : Node {
-  attribute Identifier name;
-};
+interface BindingIdentifier : VariableReference { };
 
-interface AssignmentTargetIdentifier : Node {
-  attribute Identifier name;
-};
+interface AssignmentTargetIdentifier : VariableReference { };
 
 interface MemberAssignmentTarget : Node {
   attribute (Expression or Super) _object;
@@ -361,9 +360,8 @@ interface FunctionExpression : Expression {
 };
 FunctionExpression implements Function;
 
-interface IdentifierExpression : Expression {
-  attribute Identifier name;
-};
+interface IdentifierExpression : Expression { };
+IdentifierExpression implements VariableReference;
 
 interface NewExpression : Expression {
   attribute Expression callee;
