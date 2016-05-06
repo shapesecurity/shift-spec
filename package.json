@@ -9,7 +9,7 @@
     "url": "https://github.com/shapesecurity/shift-spec.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "files": [
     "spec.idl",
@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/shapesecurity/shift-spec/issues"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "shift-spec-consumer": "^1.0.0"
+  }
 }
