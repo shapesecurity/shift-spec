@@ -9,7 +9,7 @@
     "url": "https://github.com/shapesecurity/shift-spec.git"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "grep '^\\[' attribute-order.conf | tr A-Z a-z | sort -c && node test.js"
   },
   "files": [
     "spec.idl",
