@@ -4,6 +4,6 @@ script:
   - curl https://raw.githubusercontent.com/shapesecurity/CLA/master/cla-travis.sh | bash
   - npm test
 node_js:
-  - "0.12"
   - "4"
   - "6"
+  - "7"
