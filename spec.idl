@@ -52,6 +52,7 @@ enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
 
 interface Function {
+  attribute boolean isAsync;
   attribute boolean isGenerator;
   attribute FormalParameters params;
   attribute FunctionBody body;
@@ -254,6 +255,7 @@ interface ExportLocalSpecifier : Node {
 // property definition
 
 interface Method : MethodDefinition {
+  attribute boolean isAsync;
   attribute boolean isGenerator;
   attribute FormalParameters params;
 };
@@ -316,6 +318,7 @@ interface ArrayExpression : Expression {
 };
 
 interface ArrowExpression : Expression {
+  attribute boolean isAsync;
   attribute FormalParameters params;
   attribute (FunctionBody or Expression) body;
 };
@@ -398,6 +401,10 @@ interface YieldExpression : Expression {
 };
 
 interface YieldGeneratorExpression : Expression {
+  attribute Expression expression;
+};
+
+interface AwaitExpression : Expression {
   attribute Expression expression;
 };
 
