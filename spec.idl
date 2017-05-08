@@ -33,6 +33,7 @@
 
 // supporting types
 
+
 typedef (SpreadElement or Expression)[] Arguments;
 typedef DOMString string;
 typedef string Identifier;
@@ -51,9 +52,9 @@ enum BinaryOperator {
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
 
-interface Function {
-  attribute boolean isAsync;
-  attribute boolean isGenerator;
+interface Function { // `FunctionExpression`, `FunctionDeclaration`, `GeneratorExpression`, `GeneratorDeclaration`, `AsyncFunctionExpression`, `AsyncFunctionDeclaration`
+  attribute boolean isAsync; // true for `AsyncFunctionExpression` and `AsyncFunctionDeclaration`, false otherwise
+  attribute boolean isGenerator; // true for `GeneratorExpression`, `GeneratorDeclaration`, false otherwise
   attribute FormalParameters params;
   attribute FunctionBody body;
 };
@@ -64,7 +65,7 @@ interface Node {
   [TypeIndicator] readonly attribute Type type;
 };
 
-interface Program : Node { };
+interface Program : Node { }; // `Script`, `Module`
 
 interface Statement : Node { };
 interface IterationStatement : Statement {
@@ -72,14 +73,14 @@ interface IterationStatement : Statement {
 };
 
 interface Expression : Node { };
-interface MemberExpression : Expression {
+interface MemberExpression : Expression { // `MemberExpression`, `SuperProperty`
   attribute (Expression or Super) _object;
 };
 
-interface PropertyName : Node { };
+interface PropertyName : Node { }; // `[ Expression ]`, `. IdentifierName`
 
-interface ObjectProperty : Node { };
-interface NamedObjectProperty : ObjectProperty {
+interface ObjectProperty : Node { }; // `PropertyDefinition`
+interface NamedObjectProperty : ObjectProperty { // `PropertyName : AssignmentExpression`, `MethodDefinition`
   attribute PropertyName name;
 };
 interface MethodDefinition : NamedObjectProperty {
@@ -91,7 +92,7 @@ interface ImportDeclaration : Node {
 };
 interface ExportDeclaration : Node { };
 
-interface VariableReference : Node {
+interface VariableReference : Node { // `IdentifierReference`, `BindingIdentifier`
   attribute Identifier name;
 };
 
@@ -104,7 +105,7 @@ typedef (AssignmentTargetIdentifier or MemberAssignmentTarget) SimpleAssignmentT
 typedef (ObjectAssignmentTarget or ArrayAssignmentTarget) AssignmentTargetPattern;
 typedef (AssignmentTargetPattern or SimpleAssignmentTarget) AssignmentTarget;
 
-typedef (Binding or BindingWithDefault) Parameter;
+typedef (Binding or BindingWithDefault) Parameter; // `FormalParameter`
 
 interface BindingWithDefault : Node {
   attribute Binding binding;
