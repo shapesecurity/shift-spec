@@ -52,9 +52,12 @@ enum BinaryOperator {
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
 
-interface Function { // `FunctionExpression`, `FunctionDeclaration`, `GeneratorExpression`, `GeneratorDeclaration`, `AsyncFunctionExpression`, `AsyncFunctionDeclaration`
-  attribute boolean isAsync; // true for `AsyncFunctionExpression` and `AsyncFunctionDeclaration`, false otherwise
-  attribute boolean isGenerator; // true for `GeneratorExpression` and `GeneratorDeclaration`, false otherwise
+// `FunctionExpression`, `FunctionDeclaration`, `GeneratorExpression`, `GeneratorDeclaration`, `AsyncFunctionExpression`, `AsyncFunctionDeclaration`
+interface Function {
+  // True for `AsyncFunctionExpression` and `AsyncFunctionDeclaration`, false otherwise.
+  attribute boolean isAsync;
+  // True for `GeneratorExpression` and `GeneratorDeclaration`, false otherwise.
+  attribute boolean isGenerator;
   attribute FormalParameters params;
   attribute FunctionBody body;
 };
@@ -65,7 +68,8 @@ interface Node {
   [TypeIndicator] readonly attribute Type type;
 };
 
-interface Program : Node { }; // `Script`, `Module`
+// `Script`, `Module`
+interface Program : Node { };
 
 interface Statement : Node { };
 interface IterationStatement : Statement {
@@ -73,14 +77,19 @@ interface IterationStatement : Statement {
 };
 
 interface Expression : Node { };
-interface MemberExpression : Expression { // `MemberExpression`, `SuperProperty`
-  attribute (Expression or Super) _object; // the object whose property is being accessed
+// `MemberExpression`, `SuperProperty`
+interface MemberExpression : Expression {
+  // The object whose property is being accessed.
+  attribute (Expression or Super) _object;
 };
 
-interface PropertyName : Node { }; // `[ Expression ]`, `. IdentifierName`
+// `[ Expression ]`, `. IdentifierName`
+interface PropertyName : Node { };
 
-interface ObjectProperty : Node { }; // `PropertyDefinition`
-interface NamedObjectProperty : ObjectProperty { // `PropertyName : AssignmentExpression`, `MethodDefinition`
+// `PropertyDefinition`
+interface ObjectProperty : Node { };
+// `PropertyName : AssignmentExpression`, `MethodDefinition`
+interface NamedObjectProperty : ObjectProperty {
   attribute PropertyName name;
 };
 interface MethodDefinition : NamedObjectProperty {
@@ -92,7 +101,8 @@ interface ImportDeclaration : Node {
 };
 interface ExportDeclaration : Node { };
 
-interface VariableReference : Node { // `IdentifierReference`, `BindingIdentifier`
+// `IdentifierReference`, `BindingIdentifier`
+interface VariableReference : Node {
   attribute Identifier name;
 };
 
@@ -103,9 +113,11 @@ typedef (BindingPattern or BindingIdentifier) Binding;
 
 typedef (AssignmentTargetIdentifier or MemberAssignmentTarget) SimpleAssignmentTarget;
 typedef (ObjectAssignmentTarget or ArrayAssignmentTarget) AssignmentTargetPattern;
-typedef (AssignmentTargetPattern or SimpleAssignmentTarget) AssignmentTarget; // DestructuringAssignmentTarget
+// `DestructuringAssignmentTarget`
+typedef (AssignmentTargetPattern or SimpleAssignmentTarget) AssignmentTarget;
 
-typedef (Binding or BindingWithDefault) Parameter; // `FormalParameter`
+// `FormalParameter`
+typedef (Binding or BindingWithDefault) Parameter;
 
 interface BindingWithDefault : Node {
   attribute Binding binding;
@@ -117,19 +129,24 @@ interface BindingIdentifier : VariableReference { };
 interface AssignmentTargetIdentifier : VariableReference { };
 
 interface MemberAssignmentTarget : Node {
-  attribute (Expression or Super) _object; // the object whose property is being assigned to
+  // The object whose property is being assigned to.
+  attribute (Expression or Super) _object;
 };
 
 interface ComputedMemberAssignmentTarget : MemberAssignmentTarget {
-  attribute Expression expression; // the expression resolving to the name of the property to be accessed
+  // The expression resolving to the name of the property to be accessed.
+  attribute Expression expression;
 };
 
 interface StaticMemberAssignmentTarget : MemberAssignmentTarget {
-  attribute IdentifierName property; // the name of the property to be accessed
+  // The name of the property to be accessed.
+  attribute IdentifierName property;
 };
 
-interface ArrayBinding : Node { // `ArrayBindingPattern`
-  attribute (Binding or BindingWithDefault)?[] elements; // the elements of the array pattern; a null value represents an elision
+// `ArrayBindingPattern`
+interface ArrayBinding : Node {
+  // The elements of the array pattern; a null value represents an elision.
+  attribute (Binding or BindingWithDefault)?[] elements;
   attribute Binding? rest;
 };
 
@@ -139,38 +156,47 @@ interface ObjectBinding : Node {
 
 interface BindingProperty : Node { };
 
-interface BindingPropertyIdentifier : BindingProperty { // `SingleNameBinding`
+// `SingleNameBinding`
+interface BindingPropertyIdentifier : BindingProperty {
   attribute BindingIdentifier binding;
   attribute Expression? init;
 };
 
-interface BindingPropertyProperty : BindingProperty { // `BindingProperty :: PropertyName : BindingElement`
+// `BindingProperty :: PropertyName : BindingElement`
+interface BindingPropertyProperty : BindingProperty {
   attribute PropertyName name;
   attribute (Binding or BindingWithDefault) binding;
 };
 
-interface AssignmentTargetWithDefault : Node { // the case where the initializer is present in `AssignmentElement :: DestructuringAssignmentTarget Initializer_opt`
+// This interface represents the case where the initializer is present in `AssignmentElement :: DestructuringAssignmentTarget Initializer_opt`.
+interface AssignmentTargetWithDefault : Node {
   attribute AssignmentTarget binding;
   attribute Expression init;
 };
 
-interface ArrayAssignmentTarget : Node { // `ArrayAssignmentPattern`
-  attribute (AssignmentTarget or AssignmentTargetWithDefault)?[] elements; // the elements of the array pattern; a null value represents an elision
+// `ArrayAssignmentPattern`
+interface ArrayAssignmentTarget : Node {
+  // The elements of the array pattern; a null value represents an elision.
+  attribute (AssignmentTarget or AssignmentTargetWithDefault)?[] elements;
   attribute AssignmentTarget? rest;
 };
 
-interface ObjectAssignmentTarget : Node { // `ObjectAssignmentPattern`
+// `ObjectAssignmentPattern`
+interface ObjectAssignmentTarget : Node {
   attribute AssignmentTargetProperty[] properties;
 };
 
-interface AssignmentTargetProperty : Node { }; // `AssignmentProperty`
+// `AssignmentProperty`
+interface AssignmentTargetProperty : Node { };
 
-interface AssignmentTargetPropertyIdentifier : AssignmentTargetProperty { // `AssignmentProperty :: IdentifierReference Initializer_opt`
+// `AssignmentProperty :: IdentifierReference Initializer_opt`
+interface AssignmentTargetPropertyIdentifier : AssignmentTargetProperty {
   attribute AssignmentTargetIdentifier binding;
   attribute Expression? init;
 };
 
-interface AssignmentTargetPropertyProperty : AssignmentTargetProperty { // `AssignmentProperty :: PropertyName : AssignmentElement_opt`
+// `AssignmentProperty :: PropertyName : AssignmentElement`
+interface AssignmentTargetPropertyProperty : AssignmentTargetProperty {
   attribute PropertyName name;
   attribute (AssignmentTarget or AssignmentTargetWithDefault) binding;
 };
@@ -194,7 +220,8 @@ interface ClassDeclaration : Statement {
 ClassDeclaration implements Class;
 
 interface ClassElement : Node {
-  attribute boolean isStatic; // true iff `IsStatic` of ClassElement is true
+  // True iff `IsStatic` of ClassElement is true.
+  attribute boolean isStatic;
   attribute MethodDefinition method;
 };
 
@@ -206,133 +233,182 @@ interface Module : Program {
   attribute (ImportDeclaration or ExportDeclaration or Statement)[] items;
 };
 
-interface Import : ImportDeclaration { // an `ImportDeclaration` not including a namespace import
-  attribute BindingIdentifier? defaultBinding; // `ImportedDefaultBinding`, if present
+// An `ImportDeclaration` not including a namespace import.
+interface Import : ImportDeclaration {
+  // `ImportedDefaultBinding`, if present.
+  attribute BindingIdentifier? defaultBinding;
   attribute ImportSpecifier[] namedImports;
 };
 
-interface ImportNamespace : ImportDeclaration { // an `ImportDeclaration` including a namespace import
-  attribute BindingIdentifier? defaultBinding; // `ImportedDefaultBinding`, if present
+// An `ImportDeclaration` including a namespace import.
+interface ImportNamespace : ImportDeclaration {
+  // `ImportedDefaultBinding`, if present.
+  attribute BindingIdentifier? defaultBinding;
   attribute BindingIdentifier namespaceBinding;
 };
 
 interface ImportSpecifier : Node {
-  attribute IdentifierName? name; // the `IdentifierName` in `ImportSpecifier :: IdentifierName as ImportedBinding`; absent if this specifier represents the production `ImportSpecifier :: ImportedBinding`
+  // The `IdentifierName` in the production `ImportSpecifier :: IdentifierName as ImportedBinding`; absent if this specifier represents the production `ImportSpecifier :: ImportedBinding`.
+  attribute IdentifierName? name;
   attribute BindingIdentifier binding;
 };
 
-interface ExportAllFrom : ExportDeclaration { // `export * FromClause;`
+// `export * FromClause;`
+interface ExportAllFrom : ExportDeclaration {
   attribute string moduleSpecifier;
 };
 
-interface ExportFrom : ExportDeclaration { // `export ExportClause FromClause;`
+// `export ExportClause FromClause;`
+interface ExportFrom : ExportDeclaration {
   attribute ExportFromSpecifier[] namedExports;
   attribute string moduleSpecifier;
 };
 
-interface ExportLocals : ExportDeclaration { // `export ExportClause;`
+// `export ExportClause;`
+interface ExportLocals : ExportDeclaration {
   attribute ExportLocalSpecifier[] namedExports;
 };
 
-interface Export : ExportDeclaration { // `export VariableStatement`, `export Declaration`
+// `export VariableStatement`, `export Declaration`
+interface Export : ExportDeclaration {
   attribute (FunctionDeclaration or ClassDeclaration or VariableDeclaration) declaration;
 };
 
-interface ExportDefault : ExportDeclaration { // `export default HoistableDeclaration`, `export default ClassDeclaration`, `export default AssignmentExpression`
+// `export default HoistableDeclaration`, `export default ClassDeclaration`, `export default AssignmentExpression`
+interface ExportDefault : ExportDeclaration {
   attribute (FunctionDeclaration or ClassDeclaration or Expression) body;
 };
 
-interface ExportFromSpecifier : Node { // `ExportSpecifier`, as part of an ExportFrom
-  attribute IdentifierName name; // the only `IdentifierName in `ExportSpecifier :: IdentifierName`, or the first in `ExportSpecifier :: IdentifierName as IdentifierName`
-  attribute IdentifierName? exportedName; // the second `IdentifierName` in `ExportSpecifier :: IdentifierName as IdentifierName`, if present
+// `ExportSpecifier`, as part of an `ExportFrom`.
+interface ExportFromSpecifier : Node {
+  // The only `IdentifierName in `ExportSpecifier :: IdentifierName`, or the first in `ExportSpecifier :: IdentifierName as IdentifierName`.
+  attribute IdentifierName name;
+  // The second `IdentifierName` in `ExportSpecifier :: IdentifierName as IdentifierName`, if that is the production represented.
+  attribute IdentifierName? exportedName;
 };
 
-interface ExportLocalSpecifier : Node { // `ExportSpecifier`, as part of an ExportLocals
-  attribute IdentifierExpression name; // the only `IdentifierName in `ExportSpecifier :: IdentifierName`, or the first in `ExportSpecifier :: IdentifierName as IdentifierName`
-  attribute IdentifierName? exportedName; // the second `IdentifierName` in `ExportSpecifier :: IdentifierName as IdentifierName`, if present
+// `ExportSpecifier`, as part of an `ExportLocals`.
+interface ExportLocalSpecifier : Node {
+  // The only `IdentifierName in `ExportSpecifier :: IdentifierName`, or the first in `ExportSpecifier :: IdentifierName as IdentifierName`.
+  attribute IdentifierExpression name;
+  // The second `IdentifierName` in `ExportSpecifier :: IdentifierName as IdentifierName`, if present.
+  attribute IdentifierName? exportedName;
 };
 
 
 // property definition
 
-interface Method : MethodDefinition { // `PropertyName ( UniqueFormalParameters ) { FunctionBody }`, `GeneratorMethod`, `AsyncMethod`
-  attribute boolean isAsync; // true for `AsyncMethod`, false otherwise
-  attribute boolean isGenerator; // true for `GeneratorMethod`, false otherwise
-  attribute FormalParameters params; // the `UniqueFormalParameters`
+// `PropertyName ( UniqueFormalParameters ) { FunctionBody }`, `GeneratorMethod`, `AsyncMethod`
+interface Method : MethodDefinition {
+  // True for `AsyncMethod`, false otherwise.
+  attribute boolean isAsync;
+  // True for `GeneratorMethod`, false otherwise.
+  attribute boolean isGenerator;
+  // The `UniqueFormalParameters`.
+  attribute FormalParameters params;
 };
 
-interface Getter : MethodDefinition { }; // `get PropertyName ( ) { FunctionBody }`
+// `get PropertyName ( ) { FunctionBody }`
+interface Getter : MethodDefinition { };
 
-interface Setter : MethodDefinition { // `set PropertyName ( PropertySetParameterList ) { FunctionBody }`
-  attribute Parameter param; // the `PropertySetParameterList`
+// `set PropertyName ( PropertySetParameterList ) { FunctionBody }`
+interface Setter : MethodDefinition {
+  // The `PropertySetParameterList`.
+  attribute Parameter param;
 };
 
-interface DataProperty : NamedObjectProperty { // PropertyDefinition :: PropertyName : AssignmentExpression`
-  attribute Expression expression; // the `AssignmentExpression`
+// `PropertyDefinition :: PropertyName : AssignmentExpression`
+interface DataProperty : NamedObjectProperty {
+  // The `AssignmentExpression`.
+  attribute Expression expression;
 };
 
-interface ShorthandProperty : ObjectProperty { // `PropertyDefinition :: IdentifierReference`
-  attribute IdentifierExpression name; // the `IdentifierReference`
+// `PropertyDefinition :: IdentifierReference`
+interface ShorthandProperty : ObjectProperty {
+  // The `IdentifierReference`.
+  attribute IdentifierExpression name;
 };
 
 interface ComputedPropertyName : PropertyName {
   attribute Expression expression;
 };
 
-interface StaticPropertyName : PropertyName { // `LiteralPropertyName`
+// `LiteralPropertyName`
+interface StaticPropertyName : PropertyName {
   attribute string value;
 };
 
 
 // literals
 
-interface LiteralBooleanExpression : Expression { // `BooleanLiteral`
+// `BooleanLiteral`
+interface LiteralBooleanExpression : Expression {
   attribute boolean value;
 };
 
-interface LiteralInfinityExpression : Expression { }; // a `NumericLiteral` whose MV is >= 2e308
+// A `NumericLiteral` whose MV is >= 2e308.
+interface LiteralInfinityExpression : Expression { };
 
-interface LiteralNullExpression : Expression { }; // `NullLiteral`
+// `NullLiteral`
+interface LiteralNullExpression : Expression { };
 
-interface LiteralNumericExpression : Expression { // `NumericLiteral`
+// `NumericLiteral`
+interface LiteralNumericExpression : Expression {
   attribute double value;
 };
 
-interface LiteralRegExpExpression : Expression { // `RegularExpressionLiteral`
+// `RegularExpressionLiteral`
+interface LiteralRegExpExpression : Expression {
   attribute string pattern;
-  attribute boolean global; // whether the `g` flag is present
-  attribute boolean ignoreCase; // whether the `i` flag is present
-  attribute boolean multiLine; // whether the `m` flag is present
-  attribute boolean sticky; // whether the `u` flag is present
-  attribute boolean unicode; // whether the `y` flag is present
+  // Whether the `g` flag is present.
+  attribute boolean global;
+  // Whether the `i` flag is present.
+  attribute boolean ignoreCase;
+  // Whether the `m` flag is present.
+  attribute boolean multiLine;
+  // Whether the `u` flag is present.
+  attribute boolean sticky;
+  // Whether the `y` flag is present.
+  attribute boolean unicode;
 };
 
-interface LiteralStringExpression : Expression { // `StringLiteral`
+// `StringLiteral`
+interface LiteralStringExpression : Expression {
   attribute string value;
 };
 
 
 // other expressions
 
-interface ArrayExpression : Expression { // `ArrayLiteral`
-  attribute (SpreadElement or Expression)?[] elements; // the elements of the array literal; a null value represents an elision
+// `ArrayLiteral`
+interface ArrayExpression : Expression {
+  // The elements of the array literal; a null value represents an elision.
+  attribute (SpreadElement or Expression)?[] elements;
 };
 
-interface ArrowExpression : Expression { // `ArrowFunction`, `AsyncArrowFunction`
-  attribute boolean isAsync; // true for `AsyncArrowFunction`, false otherwise
+// `ArrowFunction`, `AsyncArrowFunction`
+interface ArrowExpression : Expression {
+  // True for `AsyncArrowFunction`, false otherwise.
+  attribute boolean isAsync;
   attribute FormalParameters params;
   attribute (FunctionBody or Expression) body;
 };
 
-interface AssignmentExpression : Expression { // `AssignmentExpression :: LeftHandSideExpression = AssignmentExpression`
-  attribute AssignmentTarget binding; // the `LeftHandSideExpression`
-  attribute Expression expression; // the second `AssignmentExpression`
+// `AssignmentExpression :: LeftHandSideExpression = AssignmentExpression`
+interface AssignmentExpression : Expression {
+  // The `LeftHandSideExpression`.
+  attribute AssignmentTarget binding;
+  // The `AssignmentExpression` following the `=`.
+  attribute Expression expression;
 };
 
-interface BinaryExpression : Expression { // `ExponentiationExpression`, `MultiplicativeExpression`, `AdditiveExpression`, `ShiftExpression`, `RelationalExpression`, `EqualityExpression`, `BitwiseANDExpression`, `BitwiseXORExpression`, `BitwiseORExpression`, `LogicalANDExpression`, `LogicalORExpression`
+// `ExponentiationExpression`, `MultiplicativeExpression`, `AdditiveExpression`, `ShiftExpression`, `RelationalExpression`, `EqualityExpression`, `BitwiseANDExpression`, `BitwiseXORExpression`, `BitwiseORExpression`, `LogicalANDExpression`, `LogicalORExpression`
+interface BinaryExpression : Expression {
   attribute BinaryOperator operator;
-  attribute Expression left; // the expression before the operator
-  attribute Expression right; // the expression after the operator
+  // The expression before the operator.
+  attribute Expression left;
+  // The expression after the operator.
+  attribute Expression right;
 };
 
 interface CallExpression : Expression {
@@ -340,20 +416,28 @@ interface CallExpression : Expression {
   attribute Arguments arguments;
 };
 
-interface CompoundAssignmentExpression : Expression { // `AssignmentExpression :: LeftHandSideExpression AssignmentOperator AssignmentExpression`
+// `AssignmentExpression :: LeftHandSideExpression AssignmentOperator AssignmentExpression`
+interface CompoundAssignmentExpression : Expression {
   attribute CompoundAssignmentOperator operator;
-  attribute SimpleAssignmentTarget binding; // the `LeftHandSideExpression`
-  attribute Expression expression; // the `AssignmentExpression`
+  // The `LeftHandSideExpression`.
+  attribute SimpleAssignmentTarget binding;
+  // The `AssignmentExpression`.
+  attribute Expression expression;
 };
 
 interface ComputedMemberExpression : MemberExpression {
-  attribute Expression expression; // the expression resolving to the name of the property to be accessed
+  // The expression resolving to the name of the property to be accessed.
+  attribute Expression expression;
 };
 
-interface ConditionalExpression : Expression { // `ConditionalExpression :: LogicalORExpression ? AssignmentExpression : AssignmentExpression`
-  attribute Expression test; // the `LogicalORExpression`
-  attribute Expression consequent; // the first `AssignmentExpression`
-  attribute Expression alternate; // the second `AssignmentExpression`
+// `ConditionalExpression :: LogicalORExpression ? AssignmentExpression : AssignmentExpression`
+interface ConditionalExpression : Expression {
+  // The `LogicalORExpression`.
+  attribute Expression test;
+  // The first `AssignmentExpression`.
+  attribute Expression consequent;
+  // The second `AssignmentExpression`.
+  attribute Expression alternate;
 };
 
 interface FunctionExpression : Expression {
@@ -361,7 +445,8 @@ interface FunctionExpression : Expression {
 };
 FunctionExpression implements Function;
 
-interface IdentifierExpression : Expression { }; // `IdentifierReference`
+// `IdentifierReference`
+interface IdentifierExpression : Expression { };
 IdentifierExpression implements VariableReference;
 
 interface NewExpression : Expression {
@@ -381,27 +466,37 @@ interface UnaryExpression : Expression {
 };
 
 interface StaticMemberExpression : MemberExpression {
-  attribute IdentifierName property; // the name of the property to be accessed
+  // The name of the property to be accessed.
+  attribute IdentifierName property;
 };
 
-interface TemplateExpression : Expression { // `TemplateLiteral`, `MemberExpression :: MemberExpression TemplateLiteral`, `CallExpression : CallExpression TemplateLiteral`
-  attribute Expression? tag; // The second `MemberExpression` or `CallExpression`, if present.
-  attribute (Expression or TemplateElement)[] elements; // The contents of the template. This list must be alternating TemplateElements and Expressions, beginning and ending with TemplateExpression.
+// `TemplateLiteral`, `MemberExpression :: MemberExpression TemplateLiteral`, `CallExpression : CallExpression TemplateLiteral`
+interface TemplateExpression : Expression {
+  // The second `MemberExpression` or `CallExpression`, if present.
+  attribute Expression? tag;
+  // The contents of the template. This list must be alternating TemplateElements and Expressions, beginning and ending with TemplateExpression.
+  attribute (Expression or TemplateElement)[] elements;
 };
 
-interface ThisExpression : Expression { }; // `PrimaryExpression :: this`
+// `PrimaryExpression :: this`
+interface ThisExpression : Expression { };
 
-interface UpdateExpression : Expression { // `UpdateExpression :: LeftHandSideExpression ++`, `UpdateExpression :: LeftHandSideExpression --`, `UpdateExpression :: ++ LeftHandSideExpression`, ``UpdateExpression :: -- LeftHandSideExpression`
-  attribute boolean isPrefix; // true for `UpdateExpression :: ++ LeftHandSideExpression` and `UpdateExpression :: -- LeftHandSideExpression`, false otherwise
+// `UpdateExpression :: LeftHandSideExpression ++`, `UpdateExpression :: LeftHandSideExpression --`, `UpdateExpression :: ++ LeftHandSideExpression`, ``UpdateExpression :: -- LeftHandSideExpression`
+interface UpdateExpression : Expression {
+  // True for `UpdateExpression :: ++ LeftHandSideExpression` and `UpdateExpression :: -- LeftHandSideExpression`, false otherwise.
+  attribute boolean isPrefix;
   attribute UpdateOperator operator;
   attribute SimpleAssignmentTarget operand;
 };
 
-interface YieldExpression : Expression { // `YieldExpression :: yield`, `YieldExpression :: yield AssignmentExpression`
-  attribute Expression? expression; // The `AssignmentExpression`, if present.
+// `YieldExpression :: yield`, `YieldExpression :: yield AssignmentExpression`
+interface YieldExpression : Expression {
+  // The `AssignmentExpression`, if present.
+  attribute Expression? expression;
 };
 
-interface YieldGeneratorExpression : Expression { // `YieldExpression :: yield * AssignmentExpression`
+// `YieldExpression :: yield * AssignmentExpression`
+interface YieldGeneratorExpression : Expression {
   attribute Expression expression;
 };
 
@@ -436,26 +531,39 @@ interface ExpressionStatement : Statement {
   attribute Expression expression;
 };
 
-interface ForInStatement : IterationStatement { // `for ( LeftHandSideExpression in Expression ) Statement`, `for ( var ForBinding in Expression ) Statement`, `for ( ForDeclaration in Expression ) Statement`, `for ( var BindingIdentifier Initializer in Expression ) Statement`
-  attribute (VariableDeclaration or AssignmentTarget) left; // the expression or declaration before `in`
-  attribute Expression right; // the expression after `in`
+// `for ( LeftHandSideExpression in Expression ) Statement`, `for ( var ForBinding in Expression ) Statement`, `for ( ForDeclaration in Expression ) Statement`, `for ( var BindingIdentifier Initializer in Expression ) Statement`
+interface ForInStatement : IterationStatement {
+  // The expression or declaration before `in`.
+  attribute (VariableDeclaration or AssignmentTarget) left;
+  // The expression after `in`.
+  attribute Expression right;
 };
 
-interface ForOfStatement : IterationStatement { // `for ( LeftHandSideExpression of Expression ) Statement`, `for ( var ForBinding of Expression ) Statement`, `for ( ForDeclaration of Expression ) Statement`, `for ( var BindingIdentifier Initializer of Expression ) Statement`
-  attribute (VariableDeclaration or AssignmentTarget) left; // the expression or declaration before `in`
-  attribute Expression right; // the expression after `in`
+// `for ( LeftHandSideExpression of Expression ) Statement`, `for ( var ForBinding of Expression ) Statement`, `for ( ForDeclaration of Expression ) Statement`, `for ( var BindingIdentifier Initializer of Expression ) Statement`
+interface ForOfStatement : IterationStatement {
+  // The expression or declaration before `in`.
+  attribute (VariableDeclaration or AssignmentTarget) left;
+  // The expression after `in`.
+  attribute Expression right;
 };
 
-interface ForStatement : IterationStatement { // `for ( Expression ; Expression ; Expression ) Statement`, `for ( var VariableDeclarationlist ; Expression ; Expression ) Statement`
-  attribute (VariableDeclaration or Expression)? init; // The expression or declaration before the first `;`, if present.
-  attribute Expression? test; // The expression before the second `;`, if present
-  attribute Expression? update; // The expression after the second `;`, if present
+// `for ( Expression ; Expression ; Expression ) Statement`, `for ( var VariableDeclarationlist ; Expression ; Expression ) Statement`
+interface ForStatement : IterationStatement {
+  // The expression or declaration before the first `;`, if present.
+  attribute (VariableDeclaration or Expression)? init;
+  // The expression before the second `;`, if present
+  attribute Expression? test;
+  // The expression after the second `;`, if present
+  attribute Expression? update;
 };
 
-interface IfStatement : Statement { // `if ( Expression ) Statement`, `if ( Expression ) Statement else Statement`, 
+// `if ( Expression ) Statement`, `if ( Expression ) Statement else Statement`,
+interface IfStatement : Statement {
   attribute Expression test;
-  attribute Statement consequent; // The first `Statement`.
-  attribute Statement? alternate; // The second `Statement`, if present.
+  // The first `Statement`.
+  attribute Statement consequent;
+  // The second `Statement`, if present.
+  attribute Statement? alternate;
 };
 
 interface LabeledStatement : Statement {
@@ -467,31 +575,40 @@ interface ReturnStatement : Statement {
   attribute Expression? expression;
 };
 
-interface SwitchStatement : Statement { // A `SwitchStatement` whose `CaseBlock` is `CaseBlock :: { CaseClauses }`.
+// A `SwitchStatement` whose `CaseBlock` is `CaseBlock :: { CaseClauses }`.
+interface SwitchStatement : Statement {
   attribute Expression discriminant;
   attribute SwitchCase[] cases;
 };
 
-interface SwitchStatementWithDefault : Statement { // A `SwitchStatement` whose `CaseBlock` is `CaseBlock :: { CaseClauses DefaultClause CaseClauses }`.
+// A `SwitchStatement` whose `CaseBlock` is `CaseBlock :: { CaseClauses DefaultClause CaseClauses }`.
+interface SwitchStatementWithDefault : Statement {
   attribute Expression discriminant;
-  attribute SwitchCase[] preDefaultCases; // The `CaseClauses` before the `DefaultClause`.
-  attribute SwitchDefault defaultCase; // The `DefaultClause`.
-  attribute SwitchCase[] postDefaultCases; // The `CaseClauses` after the `DefaultClause`.
+  // The `CaseClauses` before the `DefaultClause`.
+  attribute SwitchCase[] preDefaultCases;
+  // The `DefaultClause`.
+  attribute SwitchDefault defaultCase;
+  // The `CaseClauses` after the `DefaultClause`.
+  attribute SwitchCase[] postDefaultCases;
 };
 
 interface ThrowStatement : Statement {
   attribute Expression expression;
 };
 
-interface TryCatchStatement : Statement { // `TryStatement :: try Block Catch`
+// `TryStatement :: try Block Catch`
+interface TryCatchStatement : Statement {
   attribute Block body;
   attribute CatchClause catchClause;
 };
 
-interface TryFinallyStatement : Statement { // `TryStatement :: try Block Finally`, `TryStatement :: try Block Catch Finally`
-  attribute Block body; // The first `Block`.
+// `TryStatement :: try Block Finally`, `TryStatement :: try Block Catch Finally`
+interface TryFinallyStatement : Statement {
+  // The first `Block`.
+  attribute Block body;
   attribute CatchClause? catchClause;
-  attribute Block finalizer; // The `Finally`.
+  // The `Finally`.
+  attribute Block finalizer;
 };
 
 interface VariableDeclarationStatement : Statement {
@@ -514,12 +631,14 @@ interface Block : Node {
   attribute Statement[] statements;
 };
 
-interface CatchClause : Node { // `Catch`
+// `Catch`
+interface CatchClause : Node {
   attribute Binding binding;
   attribute Block body;
 };
 
-interface Directive : Node { // An item in a `DirectivePrologue`
+// An item in a `DirectivePrologue`
+interface Directive : Node {
   attribute string rawValue;
 };
 
@@ -547,18 +666,22 @@ interface SpreadElement : Node {
   attribute Expression expression;
 };
 
-interface Super : Node { }; // `super`
+// `super`
+interface Super : Node { };
 
-interface SwitchCase : Node { // `CaseClause`
+// `CaseClause`
+interface SwitchCase : Node {
   attribute Expression test;
   attribute Statement[] consequent;
 };
 
-interface SwitchDefault : Node { // `DefaultClause`
+// `DefaultClause`
+interface SwitchDefault : Node {
   attribute Statement[] consequent;
 };
 
-interface TemplateElement : Node { // `TemplateCharacters`
+// `TemplateCharacters`
+interface TemplateElement : Node {
   attribute string rawValue;
 };
 
