@@ -129,7 +129,7 @@ interface BindingIdentifier : VariableReference { };
 interface AssignmentTargetIdentifier : VariableReference { };
 
 interface MemberAssignmentTarget : Node {
-  // The object whose property is being assigned to.
+  // The object whose property is being assigned.
   attribute (Expression or Super) _object;
 };
 
@@ -298,7 +298,7 @@ interface ExportLocalSpecifier : Node {
 
 // property definition
 
-// `PropertyName ( UniqueFormalParameters ) { FunctionBody }`, `GeneratorMethod`, `AsyncMethod`
+// `MethodDefinition :: PropertyName ( UniqueFormalParameters ) { FunctionBody }`, `GeneratorMethod :: * PropertyName ( UniqueFormalParameters ) { GeneratorBody }`, `AsyncMethod :: async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }`
 interface Method : MethodDefinition {
   // True for `AsyncMethod`, false otherwise.
   attribute boolean isAsync;
@@ -346,7 +346,7 @@ interface LiteralBooleanExpression : Expression {
   attribute boolean value;
 };
 
-// A `NumericLiteral` whose MV is >= 2e308.
+// A `NumericLiteral` for which the Number value of its MV is positive infinity.
 interface LiteralInfinityExpression : Expression { };
 
 // `NullLiteral`
@@ -366,9 +366,9 @@ interface LiteralRegExpExpression : Expression {
   attribute boolean ignoreCase;
   // Whether the `m` flag is present.
   attribute boolean multiLine;
-  // Whether the `u` flag is present.
-  attribute boolean sticky;
   // Whether the `y` flag is present.
+  attribute boolean sticky;
+  // Whether the `u` flag is present.
   attribute boolean unicode;
 };
 
@@ -474,7 +474,7 @@ interface StaticMemberExpression : MemberExpression {
 interface TemplateExpression : Expression {
   // The second `MemberExpression` or `CallExpression`, if present.
   attribute Expression? tag;
-  // The contents of the template. This list must be alternating TemplateElements and Expressions, beginning and ending with TemplateExpression.
+  // The contents of the template. This list must be alternating TemplateElements and Expressions, beginning and ending with TemplateElement.
   attribute (Expression or TemplateElement)[] elements;
 };
 
@@ -539,11 +539,11 @@ interface ForInStatement : IterationStatement {
   attribute Expression right;
 };
 
-// `for ( LeftHandSideExpression of Expression ) Statement`, `for ( var ForBinding of Expression ) Statement`, `for ( ForDeclaration of Expression ) Statement`, `for ( var BindingIdentifier Initializer of Expression ) Statement`
+// `for ( LeftHandSideExpression of Expression ) Statement`, `for ( var ForBinding of Expression ) Statement`, `for ( ForDeclaration of Expression ) Statement`
 interface ForOfStatement : IterationStatement {
-  // The expression or declaration before `in`.
+  // The expression or declaration before `of`.
   attribute (VariableDeclaration or AssignmentTarget) left;
-  // The expression after `in`.
+  // The expression after `of`.
   attribute Expression right;
 };
 
@@ -604,8 +604,9 @@ interface TryCatchStatement : Statement {
 
 // `TryStatement :: try Block Finally`, `TryStatement :: try Block Catch Finally`
 interface TryFinallyStatement : Statement {
-  // The first `Block`.
+  // The `Block`.
   attribute Block body;
+  // The `Catch`, if present.
   attribute CatchClause? catchClause;
   // The `Finally`.
   attribute Block finalizer;
