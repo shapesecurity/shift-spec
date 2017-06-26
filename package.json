@@ -2,7 +2,7 @@
   "name": "shift-spec-idl",
   "version": "2017.0.0-pre",
   "description": "Shift AST specification IDL files",
-  "author": "Shape Security Labs",
+  "author": "Shape Security",
   "homepage": "https://github.com/shapesecurity/shift-spec",
   "repository": {
     "type": "git",
