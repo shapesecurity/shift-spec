@@ -370,6 +370,8 @@ interface LiteralRegExpExpression : Expression {
   attribute boolean sticky;
   // Whether the `u` flag is present.
   attribute boolean unicode;
+  // Whether the `s` flag is present.
+  attribute boolean singleLine;
 };
 
 // `StringLiteral`
