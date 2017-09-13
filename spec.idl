@@ -541,6 +541,8 @@ interface ForInStatement : IterationStatement {
 
 // `for ( LeftHandSideExpression of Expression ) Statement`, `for ( var ForBinding of Expression ) Statement`, `for ( ForDeclaration of Expression ) Statement`
 interface ForOfStatement : IterationStatement {
+  // True for `AsyncForOfStatement`, false otherwise.
+  attribute boolean isAsync;
   // The expression or declaration before `of`.
   attribute (VariableDeclaration or AssignmentTarget) left;
   // The expression after `of`.
