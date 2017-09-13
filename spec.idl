@@ -151,7 +151,7 @@ interface ArrayBinding : Node {
 };
 
 interface ObjectBinding : Node {
-  attribute BindingProperty[] properties;
+  attribute (BindingProperty or BindingRest)[] properties;
 };
 
 interface BindingProperty : Node { };
@@ -166,6 +166,11 @@ interface BindingPropertyIdentifier : BindingProperty {
 interface BindingPropertyProperty : BindingProperty {
   attribute PropertyName name;
   attribute (Binding or BindingWithDefault) binding;
+};
+
+// `...BindingRest`
+interface BindingRest : Node {
+  attribute IdentifierExpression argument;
 };
 
 // This interface represents the case where the initializer is present in `AssignmentElement :: DestructuringAssignmentTarget Initializer_opt`.
@@ -457,7 +462,7 @@ interface NewExpression : Expression {
 interface NewTargetExpression : Expression { };
 
 interface ObjectExpression : Expression {
-  attribute ObjectProperty[] properties;
+  attribute (ObjectProperty or SpreadElement)[] properties;
 };
 
 interface UnaryExpression : Expression {
