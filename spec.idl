@@ -504,6 +504,10 @@ interface AwaitExpression : Expression {
   attribute Expression expression;
 };
 
+// `DoExpression :: do BlockStatement`
+interface DoExpression : Expression {
+  attribute BlockStatement body;
+};
 
 // other statements
 
