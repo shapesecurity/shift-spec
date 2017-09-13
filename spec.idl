@@ -264,6 +264,14 @@ interface ExportFrom : ExportDeclaration {
   attribute string moduleSpecifier;
 };
 
+// `export ExportNamespaceClause FromClause;`
+interface ExportNamespaceFrom : ExportDeclaration {
+  // `ExportedDefaultBinding`, if present.
+  attribute BindingIdentifier? defaultBinding;
+  attribute ExportNamespaceFromSpecifier namespaceExport;
+  attribute string moduleSpecifier;
+};
+
 // `export ExportClause;`
 interface ExportLocals : ExportDeclaration {
   attribute ExportLocalSpecifier[] namedExports;
@@ -285,6 +293,12 @@ interface ExportFromSpecifier : Node {
   attribute IdentifierName name;
   // The second `IdentifierName` in `ExportSpecifier :: IdentifierName as IdentifierName`, if that is the production represented.
   attribute IdentifierName? exportedName;
+};
+
+// `ExportSpecifier`, as part of an `ExportFrom`.
+interface ExportNamespaceFromSpecifier : Node {
+  // The `IdentifierName` in `ExportNamespaceFromSpecifier :: * as IdentifierName`.
+  attribute IdentifierName exportedName;
 };
 
 // `ExportSpecifier`, as part of an `ExportLocals`.
