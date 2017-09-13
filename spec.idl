@@ -52,6 +52,8 @@ enum BinaryOperator {
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
 
+enum FunctionMetaProperties { "sent" };
+
 // `FunctionExpression`, `FunctionDeclaration`, `GeneratorExpression`, `GeneratorDeclaration`, `AsyncFunctionExpression`, `AsyncFunctionDeclaration`
 interface Function {
   // True for `AsyncFunctionExpression` and `AsyncFunctionDeclaration`, false otherwise.
@@ -504,6 +506,10 @@ interface AwaitExpression : Expression {
   attribute Expression expression;
 };
 
+// FunctionMetaPropertyExpression :: function . MetaProperty
+interface FunctionMetaPropertyExpression : Expression {
+  attribute FunctionMetaProperties property;
+};
 
 // other statements
 
