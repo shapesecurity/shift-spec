@@ -253,6 +253,11 @@ interface ImportSpecifier : Node {
   attribute BindingIdentifier binding;
 };
 
+// `import()`
+interface ImportExpression : Expression {
+  attribute Expression argument;
+};
+
 // `export * FromClause;`
 interface ExportAllFrom : ExportDeclaration {
   attribute string moduleSpecifier;
