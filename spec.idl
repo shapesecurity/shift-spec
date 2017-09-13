@@ -151,7 +151,8 @@ interface ArrayBinding : Node {
 };
 
 interface ObjectBinding : Node {
-  attribute (BindingProperty or BindingRest)[] properties;
+  attribute (BindingProperty)[] properties;
+  attribute BindingIdentifier? rest;
 };
 
 interface BindingProperty : Node { };
@@ -166,11 +167,6 @@ interface BindingPropertyIdentifier : BindingProperty {
 interface BindingPropertyProperty : BindingProperty {
   attribute PropertyName name;
   attribute (Binding or BindingWithDefault) binding;
-};
-
-// `...BindingRest`
-interface BindingRest : Node {
-  attribute IdentifierExpression argument;
 };
 
 // This interface represents the case where the initializer is present in `AssignmentElement :: DestructuringAssignmentTarget Initializer_opt`.
@@ -189,6 +185,7 @@ interface ArrayAssignmentTarget : Node {
 // `ObjectAssignmentPattern`
 interface ObjectAssignmentTarget : Node {
   attribute AssignmentTargetProperty[] properties;
+  attribute SimpleAssignmentTarget? rest;
 };
 
 // `AssignmentProperty`
