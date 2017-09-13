@@ -52,7 +52,7 @@ enum BinaryOperator {
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
 
-enum ImportMetaProperties { "meta" };
+enum ImportProperty { "meta" };
 
 // `FunctionExpression`, `FunctionDeclaration`, `GeneratorExpression`, `GeneratorDeclaration`, `AsyncFunctionExpression`, `AsyncFunctionDeclaration`
 interface Function {
@@ -506,8 +506,9 @@ interface AwaitExpression : Expression {
   attribute Expression expression;
 };
 
-interface ImportMetaPropertyExpression : Expression {
-  attribute ImportMetaProperties property;
+// ImportPropertyExpression :: import . ImportProperty
+interface ImportPropertyExpression : Expression {
+  attribute ImportProperty property;
 };
 
 // other statements
