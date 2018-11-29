@@ -504,6 +504,14 @@ interface AwaitExpression : Expression {
   attribute Expression expression;
 };
 
+interface BindExpression : Expression {
+  attribute Expression object;
+  attribute Expression callee;
+};
+
+interface BindMemberExpression : Expression {
+  attribute MemberExpression memberExpression;
+};
 
 // other statements
 
