@@ -152,6 +152,7 @@ interface ArrayBinding : Node {
 
 interface ObjectBinding : Node {
   attribute BindingProperty[] properties;
+  attribute Binding? rest;
 };
 
 interface BindingProperty : Node { };
@@ -184,6 +185,7 @@ interface ArrayAssignmentTarget : Node {
 // `ObjectAssignmentPattern`
 interface ObjectAssignmentTarget : Node {
   attribute AssignmentTargetProperty[] properties;
+  attribute AssignmentTarget? rest;
 };
 
 // `AssignmentProperty`
@@ -366,10 +368,12 @@ interface LiteralRegExpExpression : Expression {
   attribute boolean ignoreCase;
   // Whether the `m` flag is present.
   attribute boolean multiLine;
-  // Whether the `y` flag is present.
-  attribute boolean sticky;
+  // Whether the `s` flag is present.
+  attribute boolean dotAll;
   // Whether the `u` flag is present.
   attribute boolean unicode;
+  // Whether the `y` flag is present.
+  attribute boolean sticky;
 };
 
 // `StringLiteral`
@@ -541,6 +545,14 @@ interface ForInStatement : IterationStatement {
 
 // `for ( LeftHandSideExpression of Expression ) Statement`, `for ( var ForBinding of Expression ) Statement`, `for ( ForDeclaration of Expression ) Statement`
 interface ForOfStatement : IterationStatement {
+  // The expression or declaration before `of`.
+  attribute (VariableDeclaration or AssignmentTarget) left;
+  // The expression after `of`.
+  attribute Expression right;
+};
+
+// `for await ( LeftHandSideExpression of Expression ) Statement`, `for await ( var ForBinding of Expression ) Statement`, `for await ( ForDeclaration of Expression ) Statement`
+interface ForAwaitStatement : IterationStatement {
   // The expression or declaration before `of`.
   attribute (VariableDeclaration or AssignmentTarget) left;
   // The expression after `of`.
