@@ -331,6 +331,12 @@ interface ShorthandProperty : ObjectProperty {
   attribute IdentifierExpression name;
 };
 
+// `PropertyDefinition :: ... AssignmentExpression`
+interface SpreadProperty : ObjectProperty {
+  // The `AssignmentExpression`.
+  attribute Expression expression;
+};
+
 interface ComputedPropertyName : PropertyName {
   attribute Expression expression;
 };
