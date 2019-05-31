@@ -652,7 +652,7 @@ interface Block : Node {
 
 // `Catch`
 interface CatchClause : Node {
-  attribute Binding binding;
+  attribute Binding? binding;
   attribute Block body;
 };
 
