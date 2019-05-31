@@ -357,6 +357,11 @@ interface LiteralNumericExpression : Expression {
   attribute double value;
 };
 
+// `BigIntLiteral`
+interface LiteralBigIntExpression : Expression {
+  attribute string value;
+};
+
 // `RegularExpressionLiteral`
 interface LiteralRegExpExpression : Expression {
   attribute string pattern;
