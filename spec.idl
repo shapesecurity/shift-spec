@@ -260,6 +260,8 @@ interface ExportAllFrom : ExportDeclaration {
 
 // `export ExportClause FromClause;`
 interface ExportFrom : ExportDeclaration {
+  // `ExportedDefaultBinding`, if present.
+  attribute BindingIdentifier? defaultBinding;
   attribute ExportFromSpecifier[] namedExports;
   attribute string moduleSpecifier;
 };
