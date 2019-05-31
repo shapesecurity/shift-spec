@@ -27,7 +27,7 @@ standard with the following extended attributes:
 
 ## Status
 
-This specification currently supports ECMAScript 2018 as defined in the latest version of ECMA-262 at the time of this writing. Stability of this data structure is not guaranteed between releases of ECMA-262.
+This specification currently supports ECMAScript 2019 as defined in the latest version of ECMA-262 at the time of this writing. Stability of this data structure is not guaranteed between releases of ECMA-262.
 
 
 ## Implementations
