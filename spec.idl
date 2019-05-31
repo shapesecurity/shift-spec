@@ -152,7 +152,7 @@ interface ArrayBinding : Node {
 
 interface ObjectBinding : Node {
   attribute BindingProperty[] properties;
-  attribute Binding? rest;
+  attribute BindingIdentifier? rest;
 };
 
 interface BindingProperty : Node { };
@@ -185,7 +185,7 @@ interface ArrayAssignmentTarget : Node {
 // `ObjectAssignmentPattern`
 interface ObjectAssignmentTarget : Node {
   attribute AssignmentTargetProperty[] properties;
-  attribute AssignmentTarget? rest;
+  attribute SimpleAssignmentTarget? rest;
 };
 
 // `AssignmentProperty`
