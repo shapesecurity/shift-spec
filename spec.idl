@@ -79,6 +79,7 @@ interface IterationStatement : Statement {
 interface Expression : Node { };
 // `MemberExpression`, `SuperProperty`
 interface MemberExpression : Expression {
+  attribute boolean isOptional;
   // The object whose property is being accessed.
   attribute (Expression or Super) _object;
 };
@@ -412,6 +413,7 @@ interface BinaryExpression : Expression {
 };
 
 interface CallExpression : Expression {
+  attribute boolean isOptional;
   attribute (Expression or Super) callee;
   attribute Arguments arguments;
 };
@@ -450,6 +452,7 @@ interface IdentifierExpression : Expression { };
 IdentifierExpression implements VariableReference;
 
 interface NewExpression : Expression {
+  attribute boolean isOptional;
   attribute Expression callee;
   attribute Arguments arguments;
 };
