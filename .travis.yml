@@ -1,6 +1,6 @@
 sudo: false
 script:
-  - curl https://raw.githubusercontent.com/shapesecurity/CLA/master/cla-travis.sh | bash
+  - curl https://raw.githubusercontent.com/shapesecurity/CLA/HEAD/cla-travis.sh | bash
   - npm install
   - npm test
 node_js:
