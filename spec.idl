@@ -47,7 +47,7 @@ enum CompoundAssignmentOperator {
 };
 enum BinaryOperator {
   "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
-  ">>", ">>>", "+", "-", "*", "/", "%", "**", ",", "||", "&&", "|", "^", "&"
+  ">>", ">>>", "+", "-", "*", "/", "%", "**", ",", "||", "&&", "|", "^", "&", "??", "?."
 };
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
@@ -412,7 +412,7 @@ interface AssignmentExpression : Expression {
   attribute Expression expression;
 };
 
-// `ExponentiationExpression`, `MultiplicativeExpression`, `AdditiveExpression`, `ShiftExpression`, `RelationalExpression`, `EqualityExpression`, `BitwiseANDExpression`, `BitwiseXORExpression`, `BitwiseORExpression`, `LogicalANDExpression`, `LogicalORExpression`
+// `ExponentiationExpression`, `MultiplicativeExpression`, `AdditiveExpression`, `ShiftExpression`, `RelationalExpression`, `EqualityExpression`, `BitwiseANDExpression`, `BitwiseXORExpression`, `BitwiseORExpression`, `LogicalANDExpression`, `LogicalORExpression`, `CoalesceExpression`, `CoalesceExpressionHead`, `ShortCircuitExpression`, `OptionalExpression`
 interface BinaryExpression : Expression {
   attribute BinaryOperator operator;
   // The expression before the operator.
@@ -465,6 +465,8 @@ interface NewExpression : Expression {
 };
 
 interface NewTargetExpression : Expression { };
+
+interface ImportMetaExpression: Expression { };
 
 interface ObjectExpression : Expression {
   attribute ObjectProperty[] properties;
