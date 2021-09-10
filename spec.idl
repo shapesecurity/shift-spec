@@ -47,7 +47,7 @@ enum CompoundAssignmentOperator {
 };
 enum BinaryOperator {
   "==", "!=", "===", "!==", "<", "<=", ">", ">=", "in", "instanceof", "<<",
-  ">>", ">>>", "+", "-", "*", "/", "%", "**", ",", "||", "&&", "|", "^", "&"
+  ">>", ">>>", "+", "-", "*", "/", "%", "**", ",", "||", "&&", "|", "^", "&", "??"
 };
 enum UnaryOperator { "+", "-", "!", "~", "typeof", "void", "delete" };
 enum UpdateOperator { "++", "--" };
@@ -255,8 +255,9 @@ interface ImportSpecifier : Node {
   attribute BindingIdentifier binding;
 };
 
-// `export * FromClause;`
+// `export * FromClause;`, `export * as IdentifierName FromClause`
 interface ExportAllFrom : ExportDeclaration {
+  attribute IdentifierName? name;
   attribute string moduleSpecifier;
 };
 
@@ -349,6 +350,12 @@ interface StaticPropertyName : PropertyName {
 
 // literals
 
+// `BigIntLiteral`
+interface LiteralBigIntExpression : Expression {
+  attribute string bigint;
+  attribute double value;
+};
+
 // `BooleanLiteral`
 interface LiteralBooleanExpression : Expression {
   attribute boolean value;
@@ -412,7 +419,7 @@ interface AssignmentExpression : Expression {
   attribute Expression expression;
 };
 
-// `ExponentiationExpression`, `MultiplicativeExpression`, `AdditiveExpression`, `ShiftExpression`, `RelationalExpression`, `EqualityExpression`, `BitwiseANDExpression`, `BitwiseXORExpression`, `BitwiseORExpression`, `LogicalANDExpression`, `LogicalORExpression`
+// `ExponentiationExpression`, `MultiplicativeExpression`, `AdditiveExpression`, `ShiftExpression`, `RelationalExpression`, `EqualityExpression`, `BitwiseANDExpression`, `BitwiseXORExpression`, `BitwiseORExpression`, `LogicalANDExpression`, `LogicalORExpression`, `NullishCoalescingExpression`
 interface BinaryExpression : Expression {
   attribute BinaryOperator operator;
   // The expression before the operator.
@@ -459,15 +466,32 @@ FunctionExpression implements Function;
 interface IdentifierExpression : Expression { };
 IdentifierExpression implements VariableReference;
 
+// `ImportExpression`
+interface ImportExpression : Expression {
+  attribute Expression source;
+};
+
+// `import.meta`, `new.target`
+interface MetaProperty: Expression {
+  attribute Identifier meta;
+  attribute Identifier property;
+};
+
 interface NewExpression : Expression {
   attribute Expression callee;
   attribute Arguments arguments;
 };
 
-interface NewTargetExpression : Expression { };
-
 interface ObjectExpression : Expression {
   attribute ObjectProperty[] properties;
+};
+
+interface OptionalChainingExpression: Expression {
+  attribute Expression expression;
+};
+
+interface OptionalMemberExpression: MemberExpression {
+  attribute IdentifierName property;
 };
 
 interface UnaryExpression : Expression {
